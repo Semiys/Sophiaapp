@@ -30,7 +30,7 @@ import com.example.sophiaapp.presentation.components.FilterBottomSheet
 
 
 import androidx.compose.ui.tooling.preview.Preview
-
+import com.example.sophiaapp.utils.localization.AppStrings
 
 
 @Composable
@@ -42,7 +42,7 @@ fun LibraryScreen(){
             .padding(16.dp)
     ){
         Text(
-            text="Philosophy Basics",
+            text=AppStrings.Library.PHILOSOPHY_BASICS,
             style=MaterialTheme.typography.headlineMedium,
             modifier=Modifier.padding(bottom=16.dp)
         )
@@ -58,8 +58,8 @@ fun LibraryScreen(){
         ){
             items(3){
                 CourseCard(
-                    title="Interactive Learning",
-                    subtitle="Expert instructor",
+                    title=AppStrings.Library.INTERACTIVE_LEARNING,
+                    subtitle=AppStrings.Library.EXPERT_INSTRUCTOR,
                     onExploreClick={/*Обработка позже*/}
                 )
             }

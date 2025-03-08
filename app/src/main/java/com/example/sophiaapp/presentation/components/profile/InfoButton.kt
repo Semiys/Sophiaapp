@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.ui.unit.dp
+import com.example.sophiaapp.utils.localization.AppStrings
 
 
 @Composable
@@ -30,10 +31,10 @@ fun InfoButton(
         ){
             Icon(
                 imageVector=Icons.Default.Info,
-                contentDescription="Information"
+                contentDescription=AppStrings.Profile.INFORMATION
             )
             Spacer(modifier=Modifier.width(8.dp))
-            Text("About developers")
+            Text(text=AppStrings.Profile.ABOUT_DEVELOPERS)
 
         }
     }

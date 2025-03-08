@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import com.example.sophiaapp.domain.models.Topic
 import com.example.sophiaapp.domain.models.Branch
-
+import com.example.sophiaapp.utils.localization.AppStrings
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,21 +47,21 @@ fun FilterBottomSheet(
     var topics by remember{
         mutableStateOf(
             listOf(
-                Topic("Epistemology"),
-                Topic("Ethics"),
-                Topic("Logic"),
-                Topic("Metaphysics"),
-                Topic("Political Philosophy")
+                Topic(AppStrings.FilterBottomSheet.EPISTEMOLOGY),
+                Topic(AppStrings.FilterBottomSheet.ETHICS),
+                Topic(AppStrings.FilterBottomSheet.LOGIC),
+                Topic(AppStrings.FilterBottomSheet.METAPHYSICS),
+                Topic(AppStrings.FilterBottomSheet.POLITICAL_PHILOSOPHY)
             )
         )
     }
     var branches by remember{
         mutableStateOf(
             listOf(
-                Branch("Philosophy of Language"),
-                Branch("Philosophy of Science"),
-                Branch("Ethical Theories"),
-                Branch("Philosophy of Technology")
+                Branch(AppStrings.FilterBottomSheet.PHILOSOPHY_LANGUAGE),
+                Branch(AppStrings.FilterBottomSheet.PHILOSOPHY_SCIENCE),
+                Branch(AppStrings.FilterBottomSheet.ETHICAL_THEORIES),
+                Branch(AppStrings.FilterBottomSheet.PHILOSOPHY_TECHNOLOGY)
             )
         )
     }
@@ -78,12 +78,12 @@ fun FilterBottomSheet(
                     .padding(bottom=32.dp)
             ){
                 Text(
-                    text="Filter",
+                    text=AppStrings.FilterBottomSheet.FILTER,
                     style=MaterialTheme.typography.titleLarge,
                     modifier=Modifier.padding(bottom=16.dp)
                 )
                 Text(
-                    text="Popular Topics",
+                    text=AppStrings.FilterBottomSheet.POPULAR_TOPICS,
                     style=MaterialTheme.typography.titleMedium,
                     modifier=Modifier.padding(bottom=8.dp)
                 )
@@ -112,7 +112,7 @@ fun FilterBottomSheet(
                 Spacer(modifier=Modifier.height(24.dp))
 
                 Text(
-                    text="Branches",
+                    text=AppStrings.FilterBottomSheet.BRANCH,
                     style=MaterialTheme.typography.titleMedium,
                     modifier=Modifier.padding(bottom=8.dp)
                 )
@@ -144,7 +144,7 @@ fun FilterBottomSheet(
                         .fillMaxWidth()
                         .padding(top=24.dp)
                 ){
-                    Text("Apply Filters")
+                    Text(text=AppStrings.FilterBottomSheet.APPLY_FILTERS)
                 }
 
             }

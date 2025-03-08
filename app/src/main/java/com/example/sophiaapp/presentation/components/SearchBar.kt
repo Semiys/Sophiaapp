@@ -27,8 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-
-
+import com.example.sophiaapp.utils.localization.AppStrings
 
 
 @Composable
@@ -51,13 +50,13 @@ fun SearchBar(
         ){
             Icon(
                 imageVector=Icons.Default.Search,
-                contentDescription="Search",
+                contentDescription=AppStrings.SearchBar.SEARCH,
                 tint=MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier=Modifier.width(8.dp))
 
             Text(
-                text="Search Philosophy Topics",
+                text=AppStrings.SearchBar.SEARCH_PHILOSOPHY_TOPICS,
                 style=MaterialTheme.typography.bodyLarge,
                 color=MaterialTheme.colorScheme.onSurfaceVariant
 
@@ -68,7 +67,7 @@ fun SearchBar(
         ){
             Icon(
                 imageVector=Icons.Default.KeyboardArrowUp,
-                contentDescription="Filter",
+                contentDescription=AppStrings.FilterBottomSheet.FILTER,
                 tint=MaterialTheme.colorScheme.onSurfaceVariant
             )
         }

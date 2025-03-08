@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
-
+import com.example.sophiaapp.utils.localization.AppStrings
 
 
 @Composable
@@ -18,7 +18,7 @@ fun ProgressScreen(){
             contentAlignment=Alignment.Center
     ){
         Text(
-            text="Welcome, ProgressScreen",
+            text=AppStrings.Progress.WELCOMEPHILOSOPHER,
             style=MaterialTheme.typography.titleLarge
         )
     }

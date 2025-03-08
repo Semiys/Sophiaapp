@@ -24,10 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 
 import coil.compose.AsyncImage
-
-
-
-
+import com.example.sophiaapp.utils.localization.AppStrings
 
 
 @Composable
@@ -50,14 +47,14 @@ fun ProfilePictureSelector(
             {
                 Icon(
                     imageVector=Icons.Default.Add,
-                    contentDescription="Add photo",
+                    contentDescription= AppStrings.Profile.ADD_PHOTO,
                     modifier=Modifier.align(Alignment.Center)
                 )
             }
             else{
                 AsyncImage(
                     model=imageUrl,
-                    contentDescription="Profile picture",
+                    contentDescription=AppStrings.Profile.PHOTO_PROFILE,
                     contentScale=ContentScale.Crop,
                     modifier=Modifier.fillMaxSize()
                 )

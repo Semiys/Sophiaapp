@@ -33,7 +33,7 @@ fun BottomBar(navController:NavHostController){
         screens.forEach{screen->
             NavigationBarItem(
 
-                label={Text(text=screen.route.replace("_screen",""))},
+                label = { Text(text = screen.title) },
 
                 selected=currentRoute==screen.route,
 

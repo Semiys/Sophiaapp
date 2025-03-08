@@ -24,15 +24,22 @@ import androidx.compose.ui.unit.dp
 import com.example.sophiaapp.presentation.components.profile.ProfileTextField
 import com.example.sophiaapp.presentation.components.profile.ProfilePictureSelector
 import com.example.sophiaapp.presentation.components.profile.InfoButton
-
+import com.example.sophiaapp.utils.localization.AppStrings
+import com.example.sophiaapp.domain.models.Profile
 
 
 @Composable
 fun ProfileScreen(){
-    var name by remember {mutableStateOf("")}
-    var age by remember{mutableStateOf("")}
-    var phonenumber by remember{mutableStateOf("")}
-    var profileImageUrl by remember{mutableStateOf<String?>(null)}
+    var profile by remember {
+        mutableStateOf(
+            Profile(
+                name = "",
+                age = "",
+                phoneNumber = "",
+                photoUri = null
+            )
+        )
+    }
 
     Surface(
         modifier=Modifier.fillMaxSize()
@@ -44,49 +51,52 @@ fun ProfileScreen(){
             horizontalAlignment=Alignment.CenterHorizontally
         ){
             Text(
-                text="Complete your profile",
+                text=AppStrings.Profile.COMPLETE_PROFILE,
                 style=MaterialTheme.typography.headlineMedium,
                 modifier=Modifier.padding(bottom=24.dp)
             )
 
             ProfilePictureSelector(
-                imageUrl=profileImageUrl,
-                onImageSelected={/* логика выбора фото*/}
+                imageUrl = profile.photoUri,
+                onImageSelected =  { /* Здесь добавьте логику выбора фото */ }
             )
 
             Spacer(modifier=Modifier.height(24.dp))
 
             ProfileTextField(
-                value=name,
-                onValueChange={name=it},
-                label = "Full Name"
+                value = profile.name,
+                onValueChange = { newName ->
+                    profile = profile.copy(name = newName)
+                },
+                label = AppStrings.Profile.NAME_LABEL
             )
 
             Spacer(modifier=Modifier.height(8.dp))
 
             ProfileTextField(
-                value=age,
-                onValueChange={age=it},
-                label="Age"
+                value = profile.age,
+                onValueChange = { newAge ->
+                    profile = profile.copy(age = newAge)
+                },
+                label = AppStrings.Profile.AGE
             )
 
             Spacer(modifier=Modifier.height(8.dp))
 
             ProfileTextField(
-                value=phonenumber,
-                onValueChange={phonenumber=it},
-                label="Phone Number"
+                value = profile.phoneNumber,
+                onValueChange = { newPhone ->
+                    profile = profile.copy(phoneNumber = newPhone)
+                },
+                label = AppStrings.Profile.PHONE_NUMBER
             )
 
             Spacer(modifier=Modifier.height(24.dp))
 
             InfoButton(
-                onClick={/* Здесь будет навигация на экран информации */}
+                onClick = {/* Здесь будет навигация на экран информации */}
             )
-
-
         }
-
     }
 
 

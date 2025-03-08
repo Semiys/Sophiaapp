@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.graphics.Color
+import com.example.sophiaapp.utils.localization.AppStrings
 
 
 /*
@@ -55,13 +56,13 @@ fun HomeScreen(){
     ){
         item {
             Text(
-                text = "Welcome back, philosopher",
+                text = AppStrings.HomeScreen.WELCOME_PHILOSOPHER,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 8.dp)
 
             )
             Text(
-                text = "Explore philosophy",
+                text = AppStrings.HomeScreen.EXPLORE_PHILOSOPHY,
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 16.dp)
@@ -88,7 +89,7 @@ fun HomeScreen(){
 
                     ) {
                         Text(
-                            text = "Dive into the depths of",
+                            text = AppStrings.HomeScreen.DIVE_INTO_THE_DEPTHS,
                             style = MaterialTheme.typography.titleMedium
                         )
                         //Место для картинки
@@ -108,7 +109,7 @@ fun HomeScreen(){
                             checked = false,
                             onCheckedChange = {}
                         )
-                        Text("Unlock new insights daily")
+                        Text(text=AppStrings.HomeScreen.UNLOCK_NEW)
                     }
 
 
@@ -125,7 +126,7 @@ fun HomeScreen(){
         }
         item {
             Text(
-                text = "Ponder the mysteries of",
+                text = AppStrings.HomeScreen.PONDER_THE_MYSTERIES,
                 style = MaterialTheme.typography.titleMedium
 
             )
@@ -153,12 +154,12 @@ fun HomeScreen(){
                             modifier=Modifier.weight(1f)
                         ) {
                             Text(
-                                text = "Philosophical tools",
+                                text = AppStrings.HomeScreen.PHILOSOPHICAL_TOOLS,
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.bodyLarge
                             )
                             Text(
-                                text = "Join a global community of thinkers",
+                                text = AppStrings.HomeScreen.JOIN_GLOBAL,
                                 style = MaterialTheme.typography.bodySmall
                             )
 
@@ -182,7 +183,7 @@ fun HomeScreen(){
                         )
                     ) {
                         Text(
-                            text="Begin now",
+                            text=AppStrings.HomeScreen.BEGIN_NOW,
                             style=MaterialTheme.typography.bodyMedium,
                             modifier=Modifier.padding(horizontal=4.dp,vertical=4.dp)
                         )
@@ -193,7 +194,7 @@ fun HomeScreen(){
         }
         item{
             Text(
-                text="Discover thought categories",
+                text=AppStrings.HomeScreen.DISCOVER_THOUGHT,
                 style =MaterialTheme.typography.titleMedium,
                 modifier=Modifier.padding(vertical=16.dp)
 
@@ -232,10 +233,10 @@ fun HomeScreen(){
                             )
                             Text(
                                 text=when(index){
-                                    0 -> "Explore existential"
-                                    1 -> "Philosophies on life's"
-                                    2 -> "Study philosophical"
-                                    3 -> "Explore the"
+                                    0 -> AppStrings.HomeScreen.EXPLORE_EXISTENTIAL
+                                    1 -> AppStrings.HomeScreen.PHILOSOPHY_ONLIFE
+                                    2 -> AppStrings.HomeScreen.STUDY_PHILOCOPHICAL
+                                    3 -> AppStrings.HomeScreen.EXPLORE
                                     else -> ""
                                 },
                                 style=MaterialTheme.typography.bodyMedium

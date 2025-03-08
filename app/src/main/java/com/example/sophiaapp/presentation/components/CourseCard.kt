@@ -26,7 +26,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
-
+import com.example.sophiaapp.utils.localization.AppStrings
 
 
 @Composable
@@ -81,7 +81,7 @@ fun CourseCard(
                 modifier=Modifier
                     .align(Alignment.Bottom)
             ){
-                Text("Explore")
+                Text(text=AppStrings.CourseCard.EXPLORE)
             }
 
         }
