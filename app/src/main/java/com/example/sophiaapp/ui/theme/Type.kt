@@ -10,7 +10,7 @@ import com.example.sophiaapp.R
 
 // Set of Material typography styles to start with
 val CustomFont=FontFamily(
-    Font(R.font.rosarium)
+    Font(R.font.plainot)
 )
 val Typography = Typography(
 

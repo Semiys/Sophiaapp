@@ -49,6 +49,7 @@ fun BottomBar(navController:NavHostController){
                         Screen.Library -> Icons.Default.List
                         Screen.Progress -> Icons.Default.Check
                         Screen.Profile -> Icons.Default.Person
+                        else -> Icons.Default.Home
                     }
                     Icon(
                         imageVector=icon,

@@ -71,6 +71,34 @@ object AppStrings{
     }
     object Progress{
         const val WELCOMEPHILOSOPHER="Добро пожаловать"
+        const val SCREEN_TITLE="Прогресс обучения"
+        const val YOUR_PROGRESS = "Ваш прогресс"
+        const val OVERALL_PROGRESS = "Общий прогресс"
+        const val COMPLETED_LECTURES = "Пройденные лекции"
+        const val COMPLETED_TOPICS = "Изученные темы"
+        const val HOURS_SPENT = "Часов изучено"
+        const val ACHIEVEMENTS = "Достижения"
+        const val RECENT_ACTIVITY = "Недавняя активность"
+        const val KEEP_GOING = "Продолжайте в том же духе!"
+        const val PROGRESS_PERCENTAGE = "% пройдено"
+        const val TOTAL_TIME = "Общее время"
+        const val LEVEL = "Уровень"
+    }
+    object Welcome{
+        const val SCREEN_TITLE="Добро пожаловать"
+        const val SUBTITLE="Философия спасёт мир"
+        const val CONTINUE_BUTTON="Начать"
+    }
+    object Auth{
+        const val SIGNUP_TITLE="Регистрация"
+        const val SIGNIN_TITLE="Вход"
+        const val NAME_LABEL="Имя"
+        const val AGE_LABEL="Возраст"
+        const val PHONE_LABEL="Номер телефона"
+        const val SIGNUP_BUTTON="Зарегистрироваться"
+        const val SIGNIN_BUTTON="Войти"
+        const val ALREADY_HAVE_ACCOUNT="Уже есть аккаунт? Войти"
+        const val NO_ACCOUNT="Нет аккаунта? Зарегистрироваться "
     }
 
 
