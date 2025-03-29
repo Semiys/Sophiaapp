@@ -8,16 +8,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Button
-import androidx.compose.material3.TextButton
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.sophiaapp.presentation.common.components.CustomButton
+import com.example.sophiaapp.presentation.components.profile.ProfileTextField
+import com.example.sophiaapp.R
 
 import com.example.sophiaapp.utils.localization.AppStrings
 
@@ -26,7 +27,8 @@ fun SignInScreen(
     onSignInClick:()->Unit,
     onSignUpClick:()-> Unit
 ){
-    var phone by remember {mutableStateOf("")}
+    var email by remember {mutableStateOf("")}
+    var password by remember {mutableStateOf("")}
 
     Column(
         modifier=Modifier
@@ -40,30 +42,39 @@ fun SignInScreen(
             modifier=Modifier.padding(vertical=32.dp)
         )
 
-        OutlinedTextField(
-            value=phone,
-            onValueChange={phone=it},
-            label={Text(AppStrings.Auth.PHONE_LABEL)},
-            modifier=Modifier
-                .fillMaxWidth()
-                .padding(vertical=8.dp)
+        ProfileTextField(
+            value=email,
+            onValueChange={email=it},
+            label=AppStrings.Auth.EMAIL,
+            keyboardType= KeyboardType.Email,
+            maxLength = 50
+
+        )
+        ProfileTextField(
+            value=password,
+            onValueChange = {password=it},
+            label=AppStrings.Auth.PASSWORD,
+            keyboardType = KeyboardType.Password,
+            maxLength = 30,
+            visualTransformation=PasswordVisualTransformation()
         )
 
         Spacer(modifier=Modifier.weight(1f))
 
-        Button(
+        CustomButton(
+            text=AppStrings.Auth.SIGNIN_BUTTON,
             onClick=onSignInClick,
-            modifier=Modifier
-                .fillMaxWidth()
-                .padding(vertical=8.dp)
-        ){
-            Text(text=AppStrings.Auth.SIGNIN_BUTTON)
-        }
-        TextButton(
-            onClick=onSignUpClick
-        ){
-            Text(text=AppStrings.Auth.NO_ACCOUNT)
-        }
+            modifier=Modifier.padding(vertical=8.dp),
+            backgroundRes = R.drawable.auth_sign,
+            textColor=MaterialTheme.colorScheme.primary
+        )
+        CustomButton(
+            text=AppStrings.Auth.NO_ACCOUNT,
+            onClick=onSignUpClick,
+            modifier=Modifier.padding(top=8.dp),
+            backgroundRes = R.drawable.continue_button,
+            textColor=MaterialTheme.colorScheme.primary
+        )
 
     }
 

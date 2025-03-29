@@ -35,7 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import com.example.sophiaapp.domain.models.Topic
 import com.example.sophiaapp.domain.models.Branch
+import com.example.sophiaapp.presentation.common.components.CustomButton
 import com.example.sophiaapp.utils.localization.AppStrings
+import com.example.sophiaapp.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -138,14 +140,17 @@ fun FilterBottomSheet(
                         )
                     }
                 }
-                Button(
-                    onClick=onDismiss,
-                    modifier=Modifier
+                CustomButton(
+                    text=AppStrings.FilterBottomSheet.APPLY_FILTERS,
+                    onClick = onDismiss ,
+                    backgroundRes = R.drawable.continue_button,
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top=24.dp)
-                ){
-                    Text(text=AppStrings.FilterBottomSheet.APPLY_FILTERS)
-                }
+                        .height(56.dp),
+                    textColor=MaterialTheme.colorScheme.primary
+
+                )
+                Spacer(modifier=Modifier.height(32.dp))
 
             }
 

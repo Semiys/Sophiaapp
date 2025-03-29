@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.PaddingValues
 
 
 
@@ -26,25 +27,30 @@ import androidx.compose.ui.unit.dp
 import com.example.sophiaapp.presentation.components.SearchBar
 import com.example.sophiaapp.presentation.components.CourseCard
 import com.example.sophiaapp.presentation.components.FilterBottomSheet
-
+import com.example.sophiaapp.navigation.Screen
 
 
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import com.example.sophiaapp.utils.localization.AppStrings
 
 
 @Composable
-fun LibraryScreen(){
+fun LibraryScreen(
+    paddingValues: PaddingValues = PaddingValues(),
+    navController:NavHostController
+){
     var showBottomSheet by remember {mutableStateOf(false)}
     Column(
         modifier=Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(paddingValues)
+            .padding(horizontal = 16.dp)
     ){
         Text(
             text=AppStrings.Library.PHILOSOPHY_BASICS,
             style=MaterialTheme.typography.headlineMedium,
-            modifier=Modifier.padding(bottom=16.dp)
+            modifier=Modifier.padding(top=16.dp,bottom=16.dp)
         )
         SearchBar(
             onFilterClick={showBottomSheet=true}
@@ -56,12 +62,23 @@ fun LibraryScreen(){
             verticalArrangement=Arrangement.spacedBy(16.dp)
 
         ){
-            items(3){
+            items(3){index ->
+                val courseId=(index+1).toString()
                 CourseCard(
-                    title=AppStrings.Library.INTERACTIVE_LEARNING,
+                    courseId=courseId,
+                    title=when(index){
+                        0 -> AppStrings.Course.COURSE_1_TITLE
+                        1 -> AppStrings.Course.COURSE_2_TITLE
+                        else -> AppStrings.Course.COURSE_3_TITLE
+                    },
                     subtitle=AppStrings.Library.EXPERT_INSTRUCTOR,
-                    onExploreClick={/*Обработка позже*/}
+                    onExploreClick={id ->
+                        navController.navigate(Screen.CourseDetail.createRoute(id))
+                    }
                 )
+            }
+            item{
+                Spacer(modifier=Modifier.height(60.dp))
             }
 
         }
@@ -85,9 +102,10 @@ fun LibraryScreen(){
 
 
 
-
+/*
 @Preview(showBackground=true)
 @Composable
 fun LibraryScreenPreview(){
     LibraryScreen()
 }
+*/

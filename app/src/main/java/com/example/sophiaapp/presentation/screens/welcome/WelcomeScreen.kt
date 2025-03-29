@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
 import com.example.sophiaapp.utils.localization.AppStrings
 import com.example.sophiaapp.R
+import com.example.sophiaapp.presentation.common.components.CustomButton
 
 @Composable
 fun WelcomeScreen(
@@ -47,7 +48,7 @@ fun WelcomeScreen(
 
         }
         Image(
-            painter=painterResource(id=R.drawable.app_logo),
+            painter=painterResource(id=R.drawable.library_icon),
             contentDescription=null,
             modifier=Modifier
                 .size(300.dp)
@@ -55,14 +56,12 @@ fun WelcomeScreen(
 
         )
 
-        Button(
+        CustomButton(
+            text=AppStrings.Welcome.CONTINUE_BUTTON,
             onClick=onContinueClick,
-            modifier=Modifier
-                .fillMaxWidth()
-                .padding(bottom=32.dp)
-        ){
-            Text(text=AppStrings.Welcome.CONTINUE_BUTTON)
-        }
+            modifier=Modifier.padding(bottom=32.dp),
+            textColor=MaterialTheme.colorScheme.primary
+        )
 
 
     }

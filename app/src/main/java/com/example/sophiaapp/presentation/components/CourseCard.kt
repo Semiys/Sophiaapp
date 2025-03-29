@@ -1,5 +1,6 @@
 package com.example.sophiaapp.presentation.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,7 +12,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.background
-
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.width
 
 
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,24 +28,34 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import com.example.sophiaapp.utils.localization.AppStrings
+import com.example.sophiaapp.R
+import com.example.sophiaapp.presentation.common.components.CustomButton
 
 
 @Composable
 fun CourseCard(
+    courseId:String,
     title: String,
     subtitle: String,
-    onExploreClick:() -> Unit
+    iconRes:Int=R.drawable.stars_library,
+    onExploreClick:(String) -> Unit
 ){
-    Card(
+    Box(
         modifier=Modifier
             .fillMaxWidth()
-            .height(120.dp),
-        elevation=CardDefaults.cardElevation(
-            defaultElevation= 4.dp
-        ),
-        shape=RoundedCornerShape(16.dp)
+            .height(120.dp)
+            .clip(RoundedCornerShape(16.dp))
     ){
+        Image(
+            painter= painterResource(id=R.drawable.card_background),
+            contentDescription = null,
+            modifier = Modifier.matchParentSize(),
+            contentScale = ContentScale.FillBounds
+        )
         Row(
             modifier=Modifier
                 .fillMaxSize()
@@ -51,23 +63,23 @@ fun CourseCard(
             horizontalArrangement=Arrangement.SpaceBetween
 
         ){
-            Box(
-                modifier=Modifier
-                    .size(88.dp)
-                    .background(
-                        color=MaterialTheme.colorScheme.surfaceVariant,
-                        shape=RoundedCornerShape(8.dp)
-                    )
-            )
             Column(
                 modifier=Modifier
                     .weight(1f)
-                    .padding(horizontal=16.dp),
+                    .fillMaxHeight(),
                 verticalArrangement=Arrangement.Center
             ){
+                Image(
+                    painter= painterResource(id=iconRes),
+                    contentDescription=null,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .padding(bottom=8.dp)
+                )
                 Text(
                     text=title,
-                    style=MaterialTheme.typography.titleMedium
+                    style=MaterialTheme.typography.titleMedium,
+                    color=MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text=subtitle,
@@ -76,12 +88,19 @@ fun CourseCard(
                 )
 
             }
-            Button(
-                onClick=onExploreClick,
+            Box(
                 modifier=Modifier
                     .align(Alignment.Bottom)
             ){
-                Text(text=AppStrings.CourseCard.EXPLORE)
+                CustomButton(
+                    text=AppStrings.CourseCard.EXPLORE,
+                    onClick={onExploreClick(courseId)},
+                    backgroundRes = R.drawable.auth_sign,
+                    textColor=MaterialTheme.colorScheme.primary,
+                    modifier=Modifier
+                        .width(120.dp)
+                        .height(40.dp)
+                )
             }
 
         }

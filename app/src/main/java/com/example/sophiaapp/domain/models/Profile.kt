@@ -2,7 +2,8 @@ package com.example.sophiaapp.domain.models
 
 data class Profile(
     val name: String = "",
-    val age: String = "",
-    val phoneNumber: String = "",
+    val birthDate: String = "",
+    val email: String = "",
+    val password: String="",
     val photoUri: String? = null
 )

@@ -8,18 +8,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Button
-import androidx.compose.material3.TextButton
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.sophiaapp.presentation.common.components.CustomButton
+import com.example.sophiaapp.presentation.components.profile.ProfileTextField
 import com.example.sophiaapp.utils.localization.AppStrings
+import com.example.sophiaapp.R
 
 
 @Composable
@@ -29,8 +30,11 @@ fun SignUpScreen(
 
 ){
     var name by remember {mutableStateOf("")}
-    var age by remember{mutableStateOf("")}
-    var phone by remember{mutableStateOf("")}
+    var birthDate by remember{mutableStateOf("")}
+    var email by remember{mutableStateOf("")}
+    var password by remember {mutableStateOf("")}
+    var confirmPassword by remember{mutableStateOf("")}
+
 
     Column(
         modifier=Modifier
@@ -45,48 +49,63 @@ fun SignUpScreen(
             modifier=Modifier.padding(vertical=32.dp)
         )
 
-        OutlinedTextField(
+        ProfileTextField(
             value=name,
             onValueChange={name=it},
-            label={Text(AppStrings.Auth.NAME_LABEL)},
-            modifier=Modifier
-                .fillMaxWidth()
-                .padding(vertical=8.dp)
+            label=AppStrings.Auth.NAME_LABEL,
+            maxLength = 50
         )
 
-        OutlinedTextField(
-            value=age,
-            onValueChange={age=it},
-            label={Text(AppStrings.Auth.AGE_LABEL)},
-            modifier=Modifier
-                .fillMaxWidth()
-                .padding(vertical=8.dp)
+        ProfileTextField(
+            value=birthDate,
+            onValueChange={birthDate=it},
+            label=AppStrings.Auth.BIRTHDATE,
+            keyboardType=KeyboardType.Text,
+            maxLength = 10,
+            placeholder="ДД.ММ.ГГГГ"
         )
 
-        OutlinedTextField(
-            value=phone,
-            onValueChange={phone=it},
-            label={Text(AppStrings.Auth.PHONE_LABEL)},
-            modifier=Modifier
-                .fillMaxWidth()
-                .padding(vertical=8.dp)
+        ProfileTextField(
+            value=email,
+            onValueChange={email=it},
+            label=AppStrings.Auth.EMAIL,
+            keyboardType = KeyboardType.Email,
+            maxLength = 50
+        )
+        ProfileTextField(
+            value=password,
+            onValueChange = {password=it},
+            label=AppStrings.Auth.PASSWORD,
+            keyboardType = KeyboardType.Password,
+            maxLength = 30,
+            visualTransformation=PasswordVisualTransformation()
+        )
+        ProfileTextField(
+            value=confirmPassword,
+            onValueChange = {confirmPassword=it},
+            label=AppStrings.Auth.CONFIRMPASSWORD,
+            keyboardType=KeyboardType.Password,
+            maxLength = 30,
+            visualTransformation=PasswordVisualTransformation()
         )
 
         Spacer(modifier=Modifier.weight(1f))
 
-        Button(
+        CustomButton(
+            text=AppStrings.Auth.SIGNUP_BUTTON,
             onClick=onRegisterClick,
-            modifier=Modifier
-                .fillMaxWidth()
-                .padding(vertical=8.dp)
-        ){
-            Text(text=AppStrings.Auth.SIGNUP_BUTTON)
-        }
-        TextButton(
-            onClick=onSignInClick
-        ){
-            Text(text=AppStrings.Auth.ALREADY_HAVE_ACCOUNT)
-        }
+            modifier=Modifier.padding(vertical=8.dp),
+            backgroundRes = R.drawable.auth_sign,
+            textColor = MaterialTheme.colorScheme.primary
+
+        )
+        CustomButton(
+            text=AppStrings.Auth.ALREADY_HAVE_ACCOUNT,
+            onClick=onSignInClick,
+            modifier=Modifier.padding(top=8.dp),
+            backgroundRes = R.drawable.continue_button,
+            textColor=MaterialTheme.colorScheme.primary
+        )
 
 
 

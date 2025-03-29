@@ -1,5 +1,6 @@
 package com.example.sophiaapp.presentation.screens.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,6 +18,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 
 
 import androidx.compose.material3.ButtonDefaults
@@ -34,7 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import com.example.sophiaapp.utils.localization.AppStrings
+import com.example.sophiaapp.R
+import com.example.sophiaapp.presentation.common.components.CustomButton
 
 
 /*
@@ -43,11 +50,12 @@ import androidx.compose.ui.tooling.preview.Preview
 
 
 @Composable
-fun HomeScreen(){
+fun HomeScreen(paddingValues: PaddingValues = PaddingValues()){
     LazyColumn(
         modifier=Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(paddingValues)
+            .padding(horizontal=16.dp)
 
 
 
@@ -58,7 +66,7 @@ fun HomeScreen(){
             Text(
                 text = AppStrings.HomeScreen.WELCOME_PHILOSOPHER,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 8.dp,top=16.dp)
 
             )
             Text(
@@ -69,15 +77,17 @@ fun HomeScreen(){
             )
         }
         item {
-            Card(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 24.dp),
-                elevation=CardDefaults.cardElevation(
-                    defaultElevation=4.dp
-                ),
-                shape=RoundedCornerShape(16.dp)
+                    .padding(vertical = 24.dp)
             ) {
+                Image(
+                    painter= painterResource(id=R.drawable.card_background),
+                    contentDescription=null,
+                    modifier=Modifier.matchParentSize(),
+                    contentScale=ContentScale.FillBounds
+                )
                 Column(
                     modifier = Modifier.padding(16.dp)
 
@@ -93,10 +103,10 @@ fun HomeScreen(){
                             style = MaterialTheme.typography.titleMedium
                         )
                         //Место для картинки
-                        Box(
-                            modifier = Modifier
-                                .size(80.dp)
-                                .background(Color.LightGray)
+                        Image(
+                            painter=painterResource(id=R.drawable.app_logo),
+                            contentDescription=null,
+                            modifier=Modifier.size(80.dp)
                         )
 
 
@@ -132,16 +142,18 @@ fun HomeScreen(){
             )
         }
         item {
-            Card(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 24.dp),
-                elevation=CardDefaults.cardElevation(
-                    defaultElevation=4.dp
-                ),
-                shape=RoundedCornerShape(16.dp)
+                    .padding(vertical = 24.dp)
 
             ) {
+                Image(
+                    painter=painterResource(id=R.drawable.card_background),
+                    contentDescription=null,
+                    modifier=Modifier.matchParentSize(),
+                    contentScale=ContentScale.FillBounds
+                )
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
@@ -164,89 +176,30 @@ fun HomeScreen(){
                             )
 
                         }
-                        Box(
-                            modifier = Modifier
-                                .size(100.dp)
-                                .background(Color.LightGray)
-                                .padding(start=16.dp)
+                        Image(
+                            painter=painterResource(id=R.drawable.app_logo),
+                            contentDescription=null,
+                            modifier=Modifier.size(80.dp)
                         )
                     }
                     //Кнопка Begin now
-                    Button(
-                        onClick = {},
-                        modifier = Modifier
-                            .padding(top = 16.dp)
-                            .wrapContentWidth(),
-                        shape=RoundedCornerShape(12.dp),
-                        elevation=ButtonDefaults.buttonElevation(
-                            defaultElevation=4.dp
-                        )
-                    ) {
-                        Text(
-                            text=AppStrings.HomeScreen.BEGIN_NOW,
-                            style=MaterialTheme.typography.bodyMedium,
-                            modifier=Modifier.padding(horizontal=4.dp,vertical=4.dp)
-                        )
-                    }
+                    CustomButton(
+                        text=AppStrings.HomeScreen.BEGIN_NOW,
+                        onClick={/* действие */},
+                        modifier=Modifier.padding(top=16.dp),
+                        backgroundRes = R.drawable.continue_button,
+                        textColor = MaterialTheme.colorScheme.primary
+                    )
+
                 }
 
             }
         }
         item{
-            Text(
-                text=AppStrings.HomeScreen.DISCOVER_THOUGHT,
-                style =MaterialTheme.typography.titleMedium,
-                modifier=Modifier.padding(vertical=16.dp)
-
-            )
+            Spacer(modifier=Modifier.height(60.dp))
         }
-        item{
-            LazyVerticalGrid(
-                columns=GridCells.Fixed(2),
-                horizontalArrangement=Arrangement.spacedBy(16.dp),
-                verticalArrangement=Arrangement.spacedBy(16.dp),
-                modifier=Modifier
-                    .fillMaxWidth()
-                    .height(500.dp),
-                userScrollEnabled = false
 
 
-            ){
-                items(4){index ->
-                    Card(
-                        modifier=Modifier.fillMaxWidth(),
-                        elevation=CardDefaults.cardElevation(
-                            defaultElevation=4.dp
-                        ),
-                        shape=RoundedCornerShape(16.dp)
-                    ){
-                        Column(
-                            modifier=Modifier.padding(16.dp),
-                            verticalArrangement=Arrangement.spacedBy(8.dp)
-
-                        ){
-                            Box(
-                                modifier=Modifier
-                                    .fillMaxWidth()
-                                    .size(120.dp)
-                                    .background(Color.LightGray)
-                            )
-                            Text(
-                                text=when(index){
-                                    0 -> AppStrings.HomeScreen.EXPLORE_EXISTENTIAL
-                                    1 -> AppStrings.HomeScreen.PHILOSOPHY_ONLIFE
-                                    2 -> AppStrings.HomeScreen.STUDY_PHILOCOPHICAL
-                                    3 -> AppStrings.HomeScreen.EXPLORE
-                                    else -> ""
-                                },
-                                style=MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    }
-                }
-
-            }
-        }
     }
 
 }

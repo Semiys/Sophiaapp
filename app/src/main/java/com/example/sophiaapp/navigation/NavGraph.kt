@@ -2,73 +2,133 @@ package com.example.sophiaapp.navigation
 
 
 import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.NavHostController
+import com.example.sophiaapp.presentation.screens.about.AboutDevelopersScreen
+import com.example.sophiaapp.presentation.screens.about.AboutProjectScreen
 import com.example.sophiaapp.presentation.screens.home.HomeScreen
 import com.example.sophiaapp.presentation.screens.library.LibraryScreen
-import com.example.sophiaapp.presentation.screens.progress.ProgressScreen
 import com.example.sophiaapp.presentation.screens.profile.ProfileScreen
 import com.example.sophiaapp.presentation.screens.welcome.WelcomeScreen
 import com.example.sophiaapp.presentation.screens.auth.SignUpScreen
 import com.example.sophiaapp.presentation.screens.auth.SignInScreen
-
+import com.example.sophiaapp.presentation.screens.legal.TermsOfUseScreen
+import com.example.sophiaapp.presentation.screens.legal.PrivacyPolicyScreen
+import com.example.sophiaapp.presentation.screens.course.CourseDetailScreen
+import com.example.sophiaapp.presentation.screens.course.CourseTheoryScreen
+import com.example.sophiaapp.presentation.screens.course.CoursePracticeScreen
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 
 @Composable
-fun SetupNavGraph(navController:NavHostController){
+fun SetupNavGraph(
+    navController:NavHostController,
+    paddingValues:PaddingValues=PaddingValues()
+){
     NavHost(
         navController=navController,
         startDestination=Screen.Welcome.route
-    ){
-        composable(route=Screen.Welcome.route){
+    ) {
+        composable(route = Screen.Welcome.route) {
             WelcomeScreen(
-                onContinueClick={
+                onContinueClick = {
                     navController.navigate(Screen.SignUp.route)
                 }
             )
         }
-        composable(route=Screen.SignUp.route){
+        composable(route = Screen.SignUp.route) {
             SignUpScreen(
-                onRegisterClick={
-                    navController.navigate(Screen.Home.route){
-                        popUpTo(Screen.Welcome.route){
-                            inclusive=true
+                onRegisterClick = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Welcome.route) {
+                            inclusive = true
                         }
                     }
                 },
-                onSignInClick={
+                onSignInClick = {
                     navController.navigate(Screen.SignIn.route)
                 }
             )
         }
 
-        composable(route=Screen.SignIn.route){
+        composable(route = Screen.SignIn.route) {
             SignInScreen(
-                onSignInClick={
-                    navController.navigate(Screen.Home.route){
-                        popUpTo(Screen.Welcome.route){
-                            inclusive=true
+                onSignInClick = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Welcome.route) {
+                            inclusive = true
                         }
                     }
                 },
-                onSignUpClick={
+                onSignUpClick = {
                     navController.navigate(Screen.SignUp.route)
                 }
             )
         }
 
 
-        composable(route=Screen.Home.route){
-            HomeScreen()
+        composable(route = Screen.Home.route) {
+            HomeScreen(paddingValues=paddingValues)
         }
-        composable(route=Screen.Library.route){
-            LibraryScreen()
+        composable(route = Screen.Library.route) {
+            LibraryScreen(
+                paddingValues=paddingValues,
+                navController=navController
+            )
         }
-        composable(route=Screen.Progress.route){
-            ProgressScreen()
+        composable(route = Screen.Profile.route) {
+            ProfileScreen(
+                navController = navController,
+                paddingValues=paddingValues
+                )
         }
-        composable(route=Screen.Profile.route){
-            ProfileScreen()
+        composable(route = Screen.AboutDevelopers.route) {
+            AboutDevelopersScreen(navController = navController)
+
+        }
+        composable(route = Screen.AboutProject.route) {
+            AboutProjectScreen(
+                navController = navController,
+                paddingValues = paddingValues
+            )
+        }
+        composable(route=Screen.PrivacyPolicy.route){
+            PrivacyPolicyScreen(navController=navController)
+        }
+        composable(route=Screen.TermsOfUse.route){
+            TermsOfUseScreen(navController=navController)
+        }
+        composable(
+            route=Screen.CourseDetail.route,
+            arguments=listOf(navArgument("courseId"){type=NavType.StringType})
+            ){backStackEntry ->
+            val courseId=backStackEntry.arguments?.getString("courseId")?:""
+            CourseDetailScreen(
+                courseId=courseId,
+                navController=navController
+            )
+        }
+        composable(
+            route=Screen.CourseTheory.route,
+            arguments=listOf(navArgument("courseId"){type=NavType.StringType})
+        ){backStackEntry ->
+            val courseId=backStackEntry.arguments?.getString("courseId")?:""
+            CourseTheoryScreen(
+                courseId=courseId,
+                navController=navController
+            )
+        }
+        composable(
+            route=Screen.CoursePractice.route,
+            arguments=listOf(navArgument("courseId"){type=NavType.StringType})
+        ){backStackEntry ->
+            val courseId=backStackEntry.arguments?.getString("courseId")?:""
+            CoursePracticeScreen(
+                courseId=courseId,
+                navController=navController
+            )
         }
 
     }
