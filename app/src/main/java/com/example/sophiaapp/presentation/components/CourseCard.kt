@@ -79,7 +79,8 @@ fun CourseCard(
                 Text(
                     text=title,
                     style=MaterialTheme.typography.titleMedium,
-                    color=MaterialTheme.colorScheme.onSurface
+                    color=MaterialTheme.colorScheme.onSurface,
+                    maxLines=2
                 )
                 Text(
                     text=subtitle,

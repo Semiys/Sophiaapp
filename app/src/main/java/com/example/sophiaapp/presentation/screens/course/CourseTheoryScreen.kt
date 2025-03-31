@@ -31,12 +31,23 @@ fun CourseTheoryScreen(
         "1" -> AppStrings.Course.COURSE_1_TITLE
         "2" -> AppStrings.Course.COURSE_2_TITLE
         "3" -> AppStrings.Course.COURSE_3_TITLE
+        "4" -> AppStrings.Course.COURSE_4_TITLE
+        "5" -> AppStrings.Course.COURSE_5_TITLE
+        "6" -> AppStrings.Course.COURSE_6_TITLE
+        "7" -> AppStrings.Course.COURSE_7_TITLE
+        "8" -> AppStrings.Course.COURSE_8_TITLE
         else -> AppStrings.Course.DEFAULT_COURSE_TITLE
     }
     val theoryText = when (courseId) {
         "1" -> AppStrings.Course.COURSE_1_DESCRIPTION
         "2" -> AppStrings.Course.COURSE_2_DESCRIPTION
         "3" -> AppStrings.Course.COURSE_3_DESCRIPTION
+        "4" -> AppStrings.Course.COURSE_4_DESCRIPTION
+        "5" -> AppStrings.Course.COURSE_5_DESCRIPTION
+        "6" -> AppStrings.Course.COURSE_6_DESCRIPTION
+        "7" -> AppStrings.Course.COURSE_7_DESCRIPTION
+        "8" -> AppStrings.Course.COURSE_8_DESCRIPTION
+
         else -> AppStrings.Course.DEFAULT_COURSE_DESCRIPTION
     }
     val scrollState = rememberScrollState()

@@ -31,6 +31,11 @@ fun CourseDetailScreen(
         "1"-> AppStrings.Course.COURSE_1_TITLE
         "2"-> AppStrings.Course.COURSE_2_TITLE
         "3"-> AppStrings.Course.COURSE_3_TITLE
+        "4"-> AppStrings.Course.COURSE_4_TITLE
+        "5"-> AppStrings.Course.COURSE_5_TITLE
+        "6"-> AppStrings.Course.COURSE_6_TITLE
+        "7"-> AppStrings.Course.COURSE_7_TITLE
+        "8"-> AppStrings.Course.COURSE_8_TITLE
         else -> AppStrings.Course.DEFAULT_COURSE_TITLE
     }
     Column(

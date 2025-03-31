@@ -62,14 +62,19 @@ fun LibraryScreen(
             verticalArrangement=Arrangement.spacedBy(16.dp)
 
         ){
-            items(3){index ->
+            items(8){index ->
                 val courseId=(index+1).toString()
                 CourseCard(
                     courseId=courseId,
                     title=when(index){
                         0 -> AppStrings.Course.COURSE_1_TITLE
                         1 -> AppStrings.Course.COURSE_2_TITLE
-                        else -> AppStrings.Course.COURSE_3_TITLE
+                        2 -> AppStrings.Course.COURSE_3_TITLE
+                        3 -> AppStrings.Course.COURSE_4_TITLE
+                        4 -> AppStrings.Course.COURSE_5_TITLE
+                        5 -> AppStrings.Course.COURSE_6_TITLE
+                        6 -> AppStrings.Course.COURSE_7_TITLE
+                        else -> AppStrings.Course.COURSE_8_TITLE
                     },
                     subtitle=AppStrings.Library.EXPERT_INSTRUCTOR,
                     onExploreClick={id ->
