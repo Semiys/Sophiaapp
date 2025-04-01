@@ -104,7 +104,7 @@ fun HomeScreen(paddingValues: PaddingValues = PaddingValues()){
                         )
                         //Место для картинки
                         Image(
-                            painter=painterResource(id=R.drawable.app_logo),
+                            painter=painterResource(id=R.drawable.book_new),
                             contentDescription=null,
                             modifier=Modifier.size(80.dp)
                         )
@@ -177,7 +177,7 @@ fun HomeScreen(paddingValues: PaddingValues = PaddingValues()){
 
                         }
                         Image(
-                            painter=painterResource(id=R.drawable.app_logo),
+                            painter=painterResource(id=R.drawable.book_new),
                             contentDescription=null,
                             modifier=Modifier.size(80.dp)
                         )
