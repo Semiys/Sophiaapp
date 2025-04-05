@@ -10,7 +10,12 @@ object PracticeRepository {
         return when(courseId) {
             "1" -> QuizContent(createDialecticsQuiz()) // Для первого курса - тест
             "2" -> PlaceholderContent("Практическое задание по философии древнего мира находится в разработке") // Заглушка
-            "3" -> PlaceholderContent("Практическое задание по современной философии находится в разработке")
+            "3" -> GameContent(  // Заменить PlaceholderContent на GameContent
+                gameType = PracticeType.GAME_1,
+                gameTitle = "Соединение типов связей",
+                gameDescription = "Соедините утверждения с соответствующими типами связей",
+                gameData = "connections_types" // ID игры, который будет передан в MatchingGameScreen
+            )
             "4" -> PlaceholderContent("Практическое задание  находится в разработке") // Заглушка// Заглушка
             "5" -> PlaceholderContent("Практическое задание  находится в разработке")
             "6" -> PlaceholderContent("Практическое задание  находится в разработке")

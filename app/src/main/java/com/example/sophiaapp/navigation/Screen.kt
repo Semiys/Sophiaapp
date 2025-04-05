@@ -26,6 +26,9 @@ sealed class Screen(
     object CoursePractice:Screen(route="course_practice_screen/{courseId}",showBottomBar=false){
         fun createRoute(courseId:String):String="course_practice_screen/$courseId"
     }
+    object MatchingGame:Screen(route="matching_game_screen",showBottomBar=false){
+        fun createRoute(gameId:String):String="matching_game_screen/$gameId"
+    }
 
     val title:String
         get()=when(this){

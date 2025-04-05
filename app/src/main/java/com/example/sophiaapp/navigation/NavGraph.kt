@@ -21,6 +21,8 @@ import com.example.sophiaapp.presentation.screens.course.CourseTheoryScreen
 import com.example.sophiaapp.presentation.screens.course.CoursePracticeScreen
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.example.sophiaapp.presentation.components.games.MatchingGameScreen
+import com.example.sophiaapp.domain.models.MatchingGame
 
 @Composable
 fun SetupNavGraph(
@@ -128,6 +130,23 @@ fun SetupNavGraph(
             CoursePracticeScreen(
                 courseId=courseId,
                 navController=navController
+            )
+        }
+        composable(
+            route = Screen.MatchingGame.route + "/{gameId}",
+            arguments = listOf(navArgument("gameId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val gameId = backStackEntry.arguments?.getString("gameId") ?: "connections_types"
+            val previousBackStackEntry = navController.previousBackStackEntry
+            val courseId = previousBackStackEntry?.arguments?.getString("courseId")
+            
+            MatchingGameScreen(
+                gameId = gameId,
+                navController = navController,
+                courseId = courseId,
+                onGameCompleted = { score, maxScore ->
+                    // Обработка завершения игры
+                }
             )
         }
 

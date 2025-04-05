@@ -14,6 +14,7 @@ import com.example.sophiaapp.presentation.common.components.QuizScreen
 import com.example.sophiaapp.utils.localization.AppStrings
 import com.example.sophiaapp.domain.models.*
 import androidx.compose.ui.text.style.TextAlign
+
 @Composable
 fun CoursePracticeScreen(
     courseId:String,
@@ -93,41 +94,41 @@ fun CoursePracticeScreen(
                 }
             }
             // Когда добавите игры, можно будет раскомментировать и настроить под свои нужды
-            /*
+
             PracticeType.GAME_1,
             PracticeType.GAME_2,
             PracticeType.GAME_3,
             PracticeType.GAME_4 -> {
                 val gameContent = practiceContent as GameContent
-                // Здесь будет ваш код для отображения игры
-                // Например:
-                GameScreen(
-                    gameContent = gameContent,
-                    onGameComplete = { /* Обработка завершения игры */ },
-                    onBack = {
-                        navController.popBackStack(
-                            Screen.CourseDetail.createRoute(courseId),
-                            inclusive = false
+
+                when (gameContent.gameType) {
+                    PracticeType.GAME_1 -> {
+                        // Встраиваем игру
+                        com.example.sophiaapp.presentation.components.games.MatchingGameScreen(
+                            gameId = gameContent.gameData,
+                            navController = navController,
+                            courseId = courseId,
+                            onGameCompleted = { score, maxScore ->
+                                // Обработка завершения игры
+                            }
                         )
                     }
-                )
-            }
-            */
-            else -> {
-                // Запасной вариант, если вдруг встретится неизвестный тип
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Этот тип контента пока не поддерживается",
-                        style = MaterialTheme.typography.bodyLarge,
-                        textAlign = TextAlign.Center
-                    )
+                    else -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize().weight(1f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Этот тип игры пока не поддерживается",
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
                 }
             }
+
+
         }
     }
 }
