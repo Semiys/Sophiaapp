@@ -9,14 +9,24 @@ object PracticeRepository {
     fun getPracticeForCourse(courseId: String, courseTitle: String): PracticeContent {
         return when(courseId) {
             "1" -> QuizContent(createDialecticsQuiz()) // Для первого курса - тест
-            "2" -> PlaceholderContent("Практическое задание по философии древнего мира находится в разработке") // Заглушка
-            "3" -> GameContent(  // Заменить PlaceholderContent на GameContent
+            "2" -> GameContent(  // Заменяем заглушку на новую игру
+                gameType = PracticeType.GAME_2,
+                gameTitle = "Диалектика в разные эпохи",
+                gameDescription = "Заполните пропуски в предложениях, вписав правильные слова",
+                gameData = "ancient_philosophy" // ID игры, который будет передан в FillInBlankGameScreen
+            )
+            "3" -> GameContent(  // Соединение типов связей
                 gameType = PracticeType.GAME_1,
                 gameTitle = "Соединение типов связей",
                 gameDescription = "Соедините утверждения с соответствующими типами связей",
                 gameData = "connections_types" // ID игры, который будет передан в MatchingGameScreen
             )
-            "4" -> PlaceholderContent("Практическое задание  находится в разработке") // Заглушка// Заглушка
+            "4" -> GameContent(  // Игра "Вставлялка" - варианты ответов
+                gameType = PracticeType.GAME_3,
+                gameTitle = "Законы в науке",
+                gameDescription = "Выберите правильный вариант, чтобы заполнить пропуск в тексте",
+                gameData = "science_laws" // ID игры, который будет передан в MultipleChoiceGameScreen
+            )
             "5" -> PlaceholderContent("Практическое задание  находится в разработке")
             "6" -> PlaceholderContent("Практическое задание  находится в разработке")
             "7" -> PlaceholderContent("Практическое задание  находится в разработке")

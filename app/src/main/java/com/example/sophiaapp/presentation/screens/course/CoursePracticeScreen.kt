@@ -103,8 +103,30 @@ fun CoursePracticeScreen(
 
                 when (gameContent.gameType) {
                     PracticeType.GAME_1 -> {
-                        // Встраиваем игру
+                        // Игра на соединение (MatchingGame)
                         com.example.sophiaapp.presentation.components.games.MatchingGameScreen(
+                            gameId = gameContent.gameData,
+                            navController = navController,
+                            courseId = courseId,
+                            onGameCompleted = { score, maxScore ->
+                                // Обработка завершения игры
+                            }
+                        )
+                    }
+                    PracticeType.GAME_2 -> {
+                        // Игра-вписывалка (FillInBlankGame)
+                        com.example.sophiaapp.presentation.components.games.FillInBlankGameScreen(
+                            gameId = gameContent.gameData,
+                            navController = navController,
+                            courseId = courseId,
+                            onGameCompleted = { score, maxScore ->
+                                // Обработка завершения игры
+                            }
+                        )
+                    }
+                    PracticeType.GAME_3 -> {
+                        // Игра-вставлялка с вариантами ответов (MultipleChoiceGame)
+                        com.example.sophiaapp.presentation.components.games.MultipleChoiceGameScreen(
                             gameId = gameContent.gameData,
                             navController = navController,
                             courseId = courseId,

@@ -29,6 +29,12 @@ sealed class Screen(
     object MatchingGame:Screen(route="matching_game_screen",showBottomBar=false){
         fun createRoute(gameId:String):String="matching_game_screen/$gameId"
     }
+    object FillInBlankGame:Screen(route="fill_in_blank_game/{id}/{courseId}",showBottomBar=false){
+        fun createRoute(id:String, courseId:String):String="fill_in_blank_game/$id/$courseId"
+    }
+    object MultipleChoiceGame:Screen(route="multiple_choice_game/{id}/{courseId}",showBottomBar=false){
+        fun createRoute(id:String, courseId:String):String="multiple_choice_game/$id/$courseId"
+    }
 
     val title:String
         get()=when(this){

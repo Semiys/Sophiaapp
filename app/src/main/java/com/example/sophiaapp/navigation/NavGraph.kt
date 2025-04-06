@@ -22,6 +22,8 @@ import com.example.sophiaapp.presentation.screens.course.CoursePracticeScreen
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.sophiaapp.presentation.components.games.MatchingGameScreen
+import com.example.sophiaapp.presentation.components.games.FillInBlankGameScreen
+import com.example.sophiaapp.presentation.components.games.MultipleChoiceGameScreen
 import com.example.sophiaapp.domain.models.MatchingGame
 
 @Composable
@@ -133,12 +135,14 @@ fun SetupNavGraph(
             )
         }
         composable(
-            route = Screen.MatchingGame.route + "/{gameId}",
-            arguments = listOf(navArgument("gameId") { type = NavType.StringType })
+            route = Screen.MatchingGame.route,
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType },
+                navArgument("courseId") { type = NavType.StringType }
+            )
         ) { backStackEntry ->
-            val gameId = backStackEntry.arguments?.getString("gameId") ?: "connections_types"
-            val previousBackStackEntry = navController.previousBackStackEntry
-            val courseId = previousBackStackEntry?.arguments?.getString("courseId")
+            val gameId = backStackEntry.arguments?.getString("id") ?: "connections_types"
+            val courseId = backStackEntry.arguments?.getString("courseId") ?: ""
             
             MatchingGameScreen(
                 gameId = gameId,
@@ -149,6 +153,45 @@ fun SetupNavGraph(
                 }
             )
         }
-
+        
+        composable(
+            route = Screen.FillInBlankGame.route,
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType },
+                navArgument("courseId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val gameId = backStackEntry.arguments?.getString("id") ?: "ancient_philosophy"
+            val courseId = backStackEntry.arguments?.getString("courseId") ?: ""
+            
+            FillInBlankGameScreen(
+                gameId = gameId,
+                navController = navController,
+                courseId = courseId,
+                onGameCompleted = { score, maxScore ->
+                    // Обработка завершения игры
+                }
+            )
+        }
+        
+        composable(
+            route = Screen.MultipleChoiceGame.route,
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType },
+                navArgument("courseId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val gameId = backStackEntry.arguments?.getString("id") ?: "science_laws"
+            val courseId = backStackEntry.arguments?.getString("courseId") ?: ""
+            
+            MultipleChoiceGameScreen(
+                gameId = gameId,
+                navController = navController,
+                courseId = courseId,
+                onGameCompleted = { score, maxScore ->
+                    // Обработка завершения игры
+                }
+            )
+        }
     }
 }
