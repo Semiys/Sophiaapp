@@ -9,8 +9,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.sophiaapp.R
 import com.example.sophiaapp.domain.models.Quiz
@@ -28,6 +30,9 @@ fun QuizScreen(
     var score by remember {mutableStateOf(0)}
     var selectedAnswers by remember{mutableStateOf(List(quiz.questions.size){-1})}
     var quizCompleted by remember{mutableStateOf(false)}
+    
+    // Проверка, все ли вопросы отвечены
+    val allQuestionsAnswered = selectedAnswers.none { it == -1 }
 
 
     val currentQuestion=quiz.questions[currentQuestionIndex]
@@ -98,22 +103,41 @@ fun QuizScreen(
                     modifier=Modifier.weight(1f).padding(start=8.dp)
                 )
             } else if (!quizCompleted){
+                // Определяем фон и цвет кнопки в зависимости от того, все ли вопросы отвечены
+                val backgroundRes = if (allQuestionsAnswered) R.drawable.card_background else R.drawable.card_background
+                val textColor = if (allQuestionsAnswered) Color.Black else Color.Gray
+                
                 CustomButton(
                     text="Завершить тест",
                     onClick={
-                        quizCompleted=true
-                        score=selectedAnswers.filterIndexed{index,answer ->
-                            answer==quiz.questions[index].correctAnswerIndex
-                        }.size
-                        onQuizComplete(score,quiz.questions.size)
+                        if (allQuestionsAnswered) {
+                            quizCompleted=true
+                            score=selectedAnswers.filterIndexed{index,answer ->
+                                answer==quiz.questions[index].correctAnswerIndex
+                            }.size
+                            onQuizComplete(score,quiz.questions.size)
+                        }
                     },
-                    backgroundRes = R.drawable.card_background,
-                    textColor=MaterialTheme.colorScheme.primary,
+                    backgroundRes = backgroundRes,
+                    textColor = textColor,
                     modifier=Modifier.weight(1f).padding(start=8.dp)
                 )
-
             }
         }
+        
+        // Показываем предупреждение, если не на все вопросы даны ответы
+        if (!quizCompleted && !allQuestionsAnswered && currentQuestionIndex == quiz.questions.size - 1) {
+            Text(
+                text = "Пожалуйста, ответьте на все вопросы перед завершением теста",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Red,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+            )
+        }
+        
         if (quizCompleted) {
             Spacer(modifier = Modifier.height(24.dp))
             Box(

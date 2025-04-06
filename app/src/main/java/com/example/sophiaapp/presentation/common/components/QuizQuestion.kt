@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.sophiaapp.R
 import com.example.sophiaapp.domain.models.QuizQuestion
@@ -29,6 +30,9 @@ fun QuizQuestionCard(
     showCorrectAnswer: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    // Проверяем, выбран ли ответ на этот вопрос
+    val isAnswered = selectedAnswerIndex != null && selectedAnswerIndex != -1
+    
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -36,6 +40,11 @@ fun QuizQuestionCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .border(
+                    width = if (!isAnswered) 2.dp else 0.dp,
+                    color = if (!isAnswered) Color.Red else Color.Transparent,
+                    shape = RoundedCornerShape(8.dp)
+                )
         ) {
             Image(
                 painter = painterResource(id = R.drawable.question),
@@ -48,9 +57,21 @@ fun QuizQuestionCard(
                 text = "$questionNumber. ${question.question}",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding( 16.dp)
+                modifier = Modifier.padding(16.dp)
             )
         }
+        
+        // Если ответ не выбран, показываем сообщение
+        if (!isAnswered) {
+            Text(
+                text = "Выберите ответ",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Red,
+                textAlign = TextAlign.Start,
+                modifier = Modifier.padding(top = 4.dp, start = 16.dp)
+            )
+        }
+        
         Spacer(modifier = Modifier.height(16.dp))
 
         question.options.forEachIndexed { index, option ->
@@ -93,8 +114,6 @@ fun QuizQuestionCard(
                     )
                 }
             }
-
         }
-
     }
 }
