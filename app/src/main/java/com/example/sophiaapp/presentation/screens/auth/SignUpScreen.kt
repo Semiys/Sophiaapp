@@ -21,98 +21,132 @@ import com.example.sophiaapp.presentation.common.components.CustomButton
 import com.example.sophiaapp.presentation.components.profile.ProfileTextField
 import com.example.sophiaapp.utils.localization.AppStrings
 import com.example.sophiaapp.R
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import com.example.sophiaapp.presentation.viewmodels.AuthViewModel
 
 
 @Composable
 fun SignUpScreen(
-    onRegisterClick:()->Unit,
-    onSignInClick:()->Unit
+    onRegisterClick: () -> Unit,
+    onSignInClick: () -> Unit,
+    viewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory(LocalContext.current))
+) {
+    var name by remember { mutableStateOf("") }
+    var birthDate by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
 
-){
-    var name by remember {mutableStateOf("")}
-    var birthDate by remember{mutableStateOf("")}
-    var email by remember{mutableStateOf("")}
-    var password by remember {mutableStateOf("")}
-    var confirmPassword by remember{mutableStateOf("")}
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+    val isLoggedIn by viewModel.isLoggedIn.collectAsState()
 
+    // Если пользователь успешно зарегистрировался, переходим на главный экран
+    LaunchedEffect(isLoggedIn) {
+        if (isLoggedIn) {
+            onRegisterClick()
+        }
+    }
 
     Column(
-        modifier=Modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        horizontalAlignment=Alignment.CenterHorizontally
-
-    ){
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
-            text=AppStrings.Auth.SIGNUP_TITLE,
-            style=MaterialTheme.typography.headlineMedium,
-            modifier=Modifier.padding(vertical=32.dp)
+            text = AppStrings.Auth.SIGNUP_TITLE,
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(vertical = 32.dp)
         )
 
         ProfileTextField(
-            value=name,
-            onValueChange={name=it},
-            label=AppStrings.Auth.NAME_LABEL,
+            value = name,
+            onValueChange = { name = it },
+            label = AppStrings.Auth.NAME_LABEL,
             maxLength = 50
         )
 
         ProfileTextField(
-            value=birthDate,
-            onValueChange={birthDate=it},
-            label=AppStrings.Auth.BIRTHDATE,
-            keyboardType=KeyboardType.Text,
+            value = birthDate,
+            onValueChange = { birthDate = it },
+            label = AppStrings.Auth.BIRTHDATE,
+            keyboardType = KeyboardType.Text,
             maxLength = 10,
-            placeholder="ДД.ММ.ГГГГ"
+            placeholder = "ДД.ММ.ГГГГ"
         )
 
         ProfileTextField(
-            value=email,
-            onValueChange={email=it},
-            label=AppStrings.Auth.EMAIL,
+            value = email,
+            onValueChange = { email = it },
+            label = AppStrings.Auth.EMAIL,
             keyboardType = KeyboardType.Email,
             maxLength = 50
         )
+
         ProfileTextField(
-            value=password,
-            onValueChange = {password=it},
-            label=AppStrings.Auth.PASSWORD,
+            value = password,
+            onValueChange = { password = it },
+            label = AppStrings.Auth.PASSWORD,
             keyboardType = KeyboardType.Password,
             maxLength = 30,
-            visualTransformation=PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation()
         )
+
         ProfileTextField(
-            value=confirmPassword,
-            onValueChange = {confirmPassword=it},
-            label=AppStrings.Auth.CONFIRMPASSWORD,
-            keyboardType=KeyboardType.Password,
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            label = AppStrings.Auth.CONFIRMPASSWORD,
+            keyboardType = KeyboardType.Password,
             maxLength = 30,
-            visualTransformation=PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation()
         )
 
-        Spacer(modifier=Modifier.weight(1f))
+        // Отображение ошибки
+        errorMessage?.let {
+            Text(
+                text = it,
+                color = Color.Red,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
 
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Кнопка регистрации
         CustomButton(
-            text=AppStrings.Auth.SIGNUP_BUTTON,
-            onClick=onRegisterClick,
-            modifier=Modifier.padding(vertical=8.dp),
+            text = AppStrings.Auth.SIGNUP_BUTTON,
+            onClick = {
+                if (password == confirmPassword) {
+                    viewModel.register(email, password, name, birthDate)
+                } else {
+                    // Показать ошибку несовпадения паролей
+                }
+            },
+            modifier = Modifier.padding(vertical = 8.dp),
             backgroundRes = R.drawable.auth_sign,
-            textColor = MaterialTheme.colorScheme.primary
-
+            textColor = MaterialTheme.colorScheme.primary,
+            enabled = !isLoading && password == confirmPassword
         )
+
+        // Индикатор загрузки
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+
         CustomButton(
-            text=AppStrings.Auth.ALREADY_HAVE_ACCOUNT,
-            onClick=onSignInClick,
-            modifier=Modifier.padding(top=8.dp),
+            text = AppStrings.Auth.ALREADY_HAVE_ACCOUNT,
+            onClick = onSignInClick,
+            modifier = Modifier.padding(top = 8.dp),
             backgroundRes = R.drawable.continue_button,
-            textColor=MaterialTheme.colorScheme.primary
+            textColor = MaterialTheme.colorScheme.primary
         )
-
-
-
-
-
-
     }
-
-
 }

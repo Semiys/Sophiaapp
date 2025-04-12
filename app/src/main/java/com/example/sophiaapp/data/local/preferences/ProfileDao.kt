@@ -5,8 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProfileDao {
+
     @Query("SELECT * FROM profile WHERE id = 1")
     fun getProfile(): Flow<ProfileEntity?>
+
 
     // Добавляем синхронный метод для внутреннего использования
     @Query("SELECT * FROM profile WHERE id = 1")

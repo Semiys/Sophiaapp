@@ -26,6 +26,9 @@ class ProfileRepository(
             entity?.toProfile()
         }
     }
+    suspend fun getProfileSync(): ProfileEntity? {
+        return profileDao.getProfileSync()
+    }
 
     suspend fun saveProfile(profile: Profile) {
         val existingProfile = profileDao.getProfileSync()
@@ -41,33 +44,48 @@ class ProfileRepository(
         profileDao.updateProfile(ProfileEntity.fromProfile(profile))
     }
 
-    fun createImageFile():Pair<File, Uri>{
-        val timeStamp=SimpleDateFormat("yyyyMMdd_HHmmss",Locale.getDefault()).format(Date())
-        val imageFileName="JPEG_"+"_" + timeStamp + "_"
-        val storageDir=context.getExternalFilesDir("ProfileImages")
-        val image=File.createTempFile(imageFileName,".jpg",storageDir)
+    fun createImageFile(): Pair<File, Uri> {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val imageFileName = "JPEG_${timeStamp}_"
 
-        val imageUri=FileProvider.getUriForFile(
+        // ИЗМЕНЕНО: Используем внутреннюю директорию вместо внешней
+        val storageDir = File(context.filesDir, "ProfileImages")
+        if (!storageDir.exists()) {
+            storageDir.mkdirs()
+        }
+
+        val image = File.createTempFile(imageFileName, ".jpg", storageDir)
+
+        val imageUri = FileProvider.getUriForFile(
             context,
             "${context.applicationContext.packageName}.fileprovider",
             image
         )
-        return Pair(image,imageUri)
+        return Pair(image, imageUri)
     }
 
     suspend fun saveProfileImage(sourceUri: Uri): String {
         try {
             val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
             val destinationFileName = "PROFILE_${timeStamp}.jpg"
-            val storageDir = context.getExternalFilesDir("ProfileImages")
-            storageDir?.mkdirs()
+
+            // ИЗМЕНЕНО: Используем внутреннюю директорию вместо внешней
+            val storageDir = File(context.filesDir, "ProfileImages")
+            if (!storageDir.exists()) {
+                val success = storageDir.mkdirs()
+                Log.d("ProfileRepository", "Directory creation result: $success for path ${storageDir.absolutePath}")
+            }
+
             val destinationFile = File(storageDir, destinationFileName)
             context.contentResolver.openInputStream(sourceUri)?.use { input ->
                 destinationFile.outputStream().use { output ->
                     input.copyTo(output)
                 }
             }
+
             val localPath = destinationFile.absolutePath
+            Log.d("ProfileRepository", "Photo saved to: $localPath")
+
             val existingProfile = profileDao.getProfileSync()
             if (existingProfile != null) {
                 val updatedProfile = existingProfile.copy(photoPath = localPath)
@@ -83,11 +101,14 @@ class ProfileRepository(
                 )
                 profileDao.insertProfile(newProfile)
             }
+
+            // Удаляем старый файл, если он существует
             existingProfile?.photoPath?.let { oldPath ->
                 if (oldPath != localPath) {
                     val oldFile = File(oldPath)
                     if (oldFile.exists() && oldFile.isFile) {
-                        oldFile.delete()
+                        val deleted = oldFile.delete()
+                        Log.d("ProfileRepository", "Old file deleted: $deleted")
                     }
                 }
             }

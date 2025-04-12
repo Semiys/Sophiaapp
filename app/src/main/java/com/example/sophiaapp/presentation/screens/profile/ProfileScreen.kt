@@ -29,14 +29,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.DisposableEffect
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+
 import com.example.sophiaapp.presentation.components.profile.ProfileTextField
 import com.example.sophiaapp.presentation.components.profile.ProfilePictureSelector
 import com.example.sophiaapp.presentation.components.profile.InfoButton
@@ -45,32 +50,66 @@ import com.example.sophiaapp.navigation.Screen
 import com.example.sophiaapp.presentation.viewmodels.ProfileViewModel
 
 import androidx.navigation.NavHostController
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import com.example.sophiaapp.presentation.components.PermissionHandler
-
+import com.example.sophiaapp.presentation.viewmodels.AuthViewModel
 
 @Composable
 fun ProfileScreen(
-    navController:NavHostController,
+    navController: NavHostController,
     paddingValues: PaddingValues = PaddingValues()
-){
-    val context= LocalContext.current
-    val viewModel: ProfileViewModel=viewModel(
-        factory=ProfileViewModel.Factory(context)
+) {
+    val context = LocalContext.current
+    val viewModel: ProfileViewModel = viewModel(
+        factory = ProfileViewModel.Factory(context)
     )
 
     val profile by viewModel.profile.collectAsState()
     val isProfileLoaded by viewModel.isProfileLoaded.collectAsState()
-    val scrollState= rememberScrollState()
+    val scrollState = rememberScrollState()
 
-    LaunchedEffect(key1=Unit) {
-        if (profile.name.isEmpty()&& profile.photoUri==null)
+    val authViewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory(LocalContext.current))
+    val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
+
+    // Загружаем/сохраняем профиль при каждом появлении экрана
+    LaunchedEffect(key1 = Unit) {
         viewModel.saveCurrentProfile()
+    }
+
+    // Наблюдаем за жизненным циклом для сохранения профиля
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_PAUSE -> viewModel.saveCurrentProfile()
+                Lifecycle.Event.ON_RESUME -> viewModel.saveCurrentProfile()
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            viewModel.saveCurrentProfile()
+        }
+    }
+
+    // Отслеживаем изменения навигации, чтобы сохранять при переключении
+    DisposableEffect(navController) {
+        val listener = NavController.OnDestinationChangedListener { _, _, _ ->
+            viewModel.saveCurrentProfile()
+        }
+        navController.addOnDestinationChangedListener(listener)
+        onDispose {
+            navController.removeOnDestinationChangedListener(listener)
+        }
     }
 
     var permissionsReady by remember { mutableStateOf(false) }
     PermissionHandler {
         permissionsReady = true
     }
+
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -175,8 +214,4 @@ fun ProfileScreen(
             }
         }
     }
-
-
 }
-
-
