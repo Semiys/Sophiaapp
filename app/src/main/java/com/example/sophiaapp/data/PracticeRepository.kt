@@ -9,7 +9,7 @@ object PracticeRepository {
     fun getPracticeForCourse(courseId: String, courseTitle: String): PracticeContent {
         return when(courseId) {
             "1" -> QuizContent(createDialecticsQuiz()) // Для первого курса - тест
-            "2" -> GameContent(  // Заменяем заглушку на новую игру
+            "2" -> GameContent(  // Игра-вписывалка (FillInBlankGame)
                 gameType = PracticeType.GAME_2,
                 gameTitle = "Диалектика в разные эпохи",
                 gameDescription = "Заполните пропуски в предложениях, вписав правильные слова",
@@ -27,10 +27,25 @@ object PracticeRepository {
                 gameDescription = "Выберите правильный вариант, чтобы заполнить пропуск в тексте",
                 gameData = "science_laws" // ID игры, который будет передан в MultipleChoiceGameScreen
             )
-            "5" -> PlaceholderContent("Практическое задание  находится в разработке")
-            "6" -> PlaceholderContent("Практическое задание  находится в разработке")
-            "7" -> PlaceholderContent("Практическое задание  находится в разработке")
-            "8" -> PlaceholderContent("Практическое задание  находится в разработке")
+            "5" -> GameContent(  // Соединение типов связей
+                gameType = PracticeType.GAME_1,
+                gameTitle = "Противоположности в системах",
+                gameDescription = "Соотнесите системы с их противоположностями",
+                gameData = "opposites_systems" // ID новой игры
+            )
+            "6" -> GameContent(  // Игра "Вставлялка" - варианты ответов
+                gameType = PracticeType.GAME_3,
+                gameTitle = "Количественные и качественные изменения",
+                gameDescription = "Выберите правильный вариант для заполнения пропуска",
+                gameData = "quality_quantity" // ID новой игры
+            )
+            "7" -> GameContent(  // Игра-вписывалка (FillInBlankGame)
+                gameType = PracticeType.GAME_2,
+                gameTitle = "Закон отрицания отрицания",
+                gameDescription = "Заполните пропуски в предложениях, вписав правильные слова",
+                gameData = "negation_law"
+            )
+            "8" -> QuizContent(createCategoriesQuiz()) // Новый тест для курса 8
             else -> PlaceholderContent("Практическое задание для этого курса скоро будет доступно")
         }
 
@@ -88,6 +103,114 @@ object PracticeRepository {
                         "Остается неизменным",
                         "Сохраняет черты предшественника и приобретает новые",
                         "Возвращается к исходному состоянию"
+                    ),
+                    correctAnswerIndex = 2
+                )
+            )
+        )
+    }
+
+    private fun createCategoriesQuiz(): Quiz {
+        return Quiz(
+            title = "Тест по категориям диалектики",
+            questions = listOf(
+                QuizQuestion(
+                    question = "Что такое единичное в диалектике?",
+                    options = listOf(
+                        "Общие черты всех предметов",
+                        "Сходство между явлениями",
+                        "Отдельный предмет или явление, отличающийся своими свойствами от других",
+                        "Совокупность всех предметов"
+                    ),
+                    correctAnswerIndex = 2
+                ),
+                QuizQuestion(
+                    question = "Как соотносятся явление и сущность?",
+                    options = listOf(
+                        "Они полностью совпадают",
+                        "Они диалектически связаны, но не совпадают",
+                        "Они никак не связаны между собой",
+                        "Они являются одним и тем же"
+                    ),
+                    correctAnswerIndex = 1
+                ),
+                QuizQuestion(
+                    question = "Что такое содержание согласно тексту?",
+                    options = listOf(
+                        "Совокупность элементов и их взаимодействий",
+                        "Внешний вид предмета",
+                        "Способ существования предмета",
+                        "Структура явления"
+                    ),
+                    correctAnswerIndex = 0
+                ),
+                QuizQuestion(
+                    question = "Как соотносятся часть и целое в диалектике?",
+                    options = listOf(
+                        "Целое равно сумме частей",
+                        "Целое больше суммы его частей",
+                        "Целое меньше суммы частей",
+                        "Части не связаны с целым"
+                    ),
+                    correctAnswerIndex = 1
+                ),
+                QuizQuestion(
+                    question = "Что такое детерминизм?",
+                    options = listOf(
+                        "Концепция закономерной причинной обусловленности явлений",
+                        "Теория случайных событий",
+                        "Учение о форме предметов",
+                        "Концепция хаотичности мира"
+                    ),
+                    correctAnswerIndex = 0
+                ),
+                QuizQuestion(
+                    question = "Что является примером взаимодействия причины и следствия?",
+                    options = listOf(
+                        "Падение домино",
+                        "Обратное воздействие следствия на свою причину",
+                        "Случайное событие",
+                        "Необходимое событие"
+                    ),
+                    correctAnswerIndex = 1
+                ),
+                QuizQuestion(
+                    question = "Как соотносятся необходимость и случайность?",
+                    options = listOf(
+                        "Они противоположны и не связаны",
+                        "Они полностью совпадают",
+                        "Случайность является формой проявления необходимости",
+                        "Необходимость исключает случайность"
+                    ),
+                    correctAnswerIndex = 2
+                ),
+                QuizQuestion(
+                    question = "Что такое повод в причинно-следственных связях?",
+                    options = listOf(
+                        "Явление, дающее толчок к следствию, но не вызывающее его напрямую",
+                        "Главная причина события",
+                        "Условие события",
+                        "Само следствие"
+                    ),
+                    correctAnswerIndex = 0
+                ),
+                QuizQuestion(
+                    question = "Как связаны возможность и действительность?",
+                    options = listOf(
+                        "Возможность при определенных условиях превращается в действительность",
+                        "Они никак не связаны",
+                        "Они всегда совпадают",
+                        "Действительность исключает возможность"
+                    ),
+                    correctAnswerIndex = 0
+                ),
+                QuizQuestion(
+                    question = "Что характеризует категорию \"общее\"?",
+                    options = listOf(
+                        "Уникальные черты предмета",
+                        "Случайные признаки",
+                        "Сходство и однотипность предметов в некоторых отношениях",
+                        "Внешние признаки явления"
                     ),
                     correctAnswerIndex = 2
                 )

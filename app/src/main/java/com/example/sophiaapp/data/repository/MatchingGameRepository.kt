@@ -11,6 +11,7 @@ class MatchingGameRepository {
         // В будущем здесь может быть получение из Firebase или другого источника
         return when (id) {
             "connections_types" -> createConnectionTypesGame()
+            "opposites_systems" -> createOppositesSystemsGame() // Добавляем новую игру
             // Другие игры могут быть добавлены здесь
             else -> throw IllegalArgumentException("Unknown game ID: $id")
         }
@@ -42,6 +43,37 @@ class MatchingGameRepository {
             "connections_types",
             "Типы связей",
             "Соедините утверждение с соответствующим типом связи",
+            questions,
+            answers,
+            correctPairs
+        )
+    }
+    private fun createOppositesSystemsGame(): MatchingGame {
+        val questions = listOf(
+            MatchingItem("q1", "Производительные силы и производственные отношения", MatchingItemType.QUESTION),
+            MatchingItem("q2", "Положительное и отрицательное заряды", MatchingItemType.QUESTION),
+            MatchingItem("q3", "Ассимиляция и диссимиляция", MatchingItemType.QUESTION),
+            MatchingItem("q4", "Соответствие и несоответствие элементов", MatchingItemType.QUESTION)
+        )
+
+        val answers = listOf(
+            MatchingItem("a1", "Атом", MatchingItemType.ANSWER),
+            MatchingItem("a2", "Организм", MatchingItemType.ANSWER),
+            MatchingItem("a3", "Общество", MatchingItemType.ANSWER),
+            MatchingItem("a4", "Система в целом", MatchingItemType.ANSWER)
+        )
+
+        val correctPairs = listOf(
+            MatchingPair("q1", "a3", true),  // Производительные силы и производственные отношения - Общество
+            MatchingPair("q2", "a1", true),  // Положительное и отрицательное заряды - Атом
+            MatchingPair("q3", "a2", true),  // Ассимиляция и диссимиляция - Организм
+            MatchingPair("q4", "a4", true)   // Соответствие и несоответствие элементов - Система в целом
+        )
+
+        return MatchingGame(
+            "opposites_systems",
+            "Противоположности в системах",
+            "Соотнесите системы с их противоположностями, соединив элементы из левой колонки с соответствующими элементами из правой колонки",
             questions,
             answers,
             correctPairs
