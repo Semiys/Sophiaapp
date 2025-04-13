@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import com.example.sophiaapp.presentation.viewmodels.AuthViewModel
+import com.example.sophiaapp.utils.ValidationUtils
 
 @Composable
 fun SignInScreen(
@@ -38,6 +40,31 @@ fun SignInScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    // Состояния ошибок валидации
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+
+    // Проверка полей
+    fun validateEmail() {
+        emailError = ValidationUtils.getEmailError(email)
+    }
+
+    fun validatePassword() {
+        // При входе проверяем только на пустое поле
+        passwordError = when {
+            password.isEmpty() -> "Пароль не может быть пустым"
+            else -> null
+        }
+    }
+
+    // Проверка всей формы
+    fun validateForm(): Boolean {
+        validateEmail()
+        validatePassword()
+
+        return emailError == null && passwordError == null
+    }
+
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
@@ -46,6 +73,37 @@ fun SignInScreen(
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn) {
             onSignInClick()
+        }
+    }
+
+    LaunchedEffect(errorMessage) {
+        // Создаем локальную переменную с явным приведением типа
+        val error = errorMessage ?: return@LaunchedEffect
+
+        // Теперь используем эту локальную переменную для проверок
+        when {
+            error.contains("password is invalid", ignoreCase = true) ||
+                    error.contains("wrong password", ignoreCase = true) ||
+                    error.contains("The password is invalid", ignoreCase = true) -> {
+                viewModel.setErrorMessage("Неверный пароль")
+            }
+            error.contains("user not found", ignoreCase = true) ||
+                    error.contains("email not found", ignoreCase = true) ||
+                    error.contains("invalid email", ignoreCase = true) ||
+                    error.contains("There is no user record", ignoreCase = true) -> {
+                viewModel.setErrorMessage("Пользователь с такой почтой не найден")
+            }
+            error.contains("network", ignoreCase = true) ||
+                    error.contains("connect", ignoreCase = true) -> {
+                viewModel.setErrorMessage("Ошибка сети. Проверьте подключение к интернету")
+            }
+            error.contains("INVALID_LOGIN_CREDENTIALS", ignoreCase = true) -> {
+                viewModel.setErrorMessage("Неверный email или пароль")
+            }
+            else -> {
+                // Если ошибка не опознана, показываем общее сообщение
+                viewModel.setErrorMessage("Ошибка авторизации. Проверьте введенные данные")
+            }
         }
     }
 
@@ -63,22 +121,38 @@ fun SignInScreen(
 
         ProfileTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = {
+                email = it
+                validateEmail()
+            },
             label = AppStrings.Auth.EMAIL,
             keyboardType = KeyboardType.Email,
-            maxLength = 50
+            maxLength = 50,
+            isError = emailError != null,
+            errorMessage = emailError,
+            modifier = Modifier.onFocusChanged {
+                if (!it.isFocused) validateEmail()
+            }
         )
 
         ProfileTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                validatePassword()
+            },
             label = AppStrings.Auth.PASSWORD,
             keyboardType = KeyboardType.Password,
             maxLength = 30,
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
+            isError = passwordError != null,
+            errorMessage = passwordError,
+            modifier = Modifier.onFocusChanged {
+                if (!it.isFocused) validatePassword()
+            }
         )
 
-        // Отображение ошибки
+        // Отображение общей ошибки
         errorMessage?.let {
             Text(
                 text = it,
@@ -91,7 +165,11 @@ fun SignInScreen(
 
         CustomButton(
             text = AppStrings.Auth.SIGNIN_BUTTON,
-            onClick = { viewModel.login(email, password) },
+            onClick = {
+                if (validateForm()) {
+                    viewModel.login(email, password)
+                }
+            },
             modifier = Modifier.padding(vertical = 8.dp),
             backgroundRes = R.drawable.auth_sign,
             textColor = MaterialTheme.colorScheme.primary,

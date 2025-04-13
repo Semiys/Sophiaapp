@@ -156,6 +156,41 @@ class ProfileViewModel(
             }
         }
     }
+    fun updatePasswordInFirebase(newPassword: String, currentPassword: String? = null) {
+        viewModelScope.launch {
+            try {
+                // Если currentPassword не предоставлен, показываем диалог для ввода текущего пароля
+                // (это можно реализовать через Flow или LiveData и диалог в UI)
+
+                // Для простоты, проверяем доступность текущего пароля
+                if (currentPassword != null) {
+                    // Сначала выполняем повторную аутентификацию
+                    val reauthResult = firebaseRepository.reauthenticateUser(_profile.value.email, currentPassword)
+
+                    reauthResult.onSuccess {
+                        // После успешной переаутентификации, обновляем пароль
+                        val result = firebaseRepository.updateUserPassword(newPassword)
+
+                        result.onSuccess {
+                            Log.d("ProfileViewModel", "Пароль успешно обновлен")
+                            _profile.value = _profile.value.copy(password = "")
+                            saveCurrentProfile()
+                        }.onFailure { error ->
+                            Log.e("ProfileViewModel", "Ошибка при обновлении пароля", error)
+                        }
+                    }.onFailure { error ->
+                        Log.e("ProfileViewModel", "Ошибка при повторной аутентификации", error)
+                    }
+                } else {
+                    // Если текущий пароль не предоставлен, показываем сообщение о необходимости
+                    // повторной авторизации (это можно отобразить в UI)
+                    Log.e("ProfileViewModel", "Для обновления пароля требуется текущий пароль")
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Исключение при обновлении пароля", e)
+            }
+        }
+    }
 
     // Сохраняем профиль при каждом переходе между вкладками
     fun saveCurrentProfile() {

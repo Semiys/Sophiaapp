@@ -129,4 +129,40 @@ class FirebaseAuthRepository {
     fun getCurrentUserId(): String? {
         return auth.currentUser?.uid
     }
+
+    /**
+     * Обновление пароля
+     */
+    suspend fun updateUserPassword(newPassword: String): Result<Unit> {
+        val user = auth.currentUser ?: return Result.failure(Exception("Пользователь не авторизован"))
+
+        return try {
+            withContext(Dispatchers.IO) {
+                user.updatePassword(newPassword).await()
+            }
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e("FirebaseAuthRepository", "Error updating password", e)
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Повторная аутентификация пользователя (для чувствительных операций)
+     */
+    suspend fun reauthenticateUser(email: String, currentPassword: String): Result<Unit> {
+        val user = auth.currentUser ?: return Result.failure(Exception("Пользователь не авторизован"))
+
+        val credential = com.google.firebase.auth.EmailAuthProvider.getCredential(email, currentPassword)
+
+        return try {
+            withContext(Dispatchers.IO) {
+                user.reauthenticate(credential).await()
+            }
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e("FirebaseAuthRepository", "Error reauthenticating user", e)
+            Result.failure(e)
+        }
+    }
 }

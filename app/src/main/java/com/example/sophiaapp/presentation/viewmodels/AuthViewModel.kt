@@ -66,10 +66,20 @@ class AuthViewModel(
             }
         }
     }
+    fun setErrorMessage(message: String) {
+        _errorMessage.value = message
+    }
 
     fun login(email: String, password: String) {
         _isLoading.value = true
         _errorMessage.value = null
+
+        // Упрощенная проверка только на пустые поля
+        if (email.isEmpty() || password.isEmpty()) {
+            _errorMessage.value = "Заполните все поля"
+            _isLoading.value = false
+            return
+        }
 
         viewModelScope.launch {
             try {
@@ -79,16 +89,18 @@ class AuthViewModel(
                     syncProfileFromFirebase()
                     _isLoggedIn.value = true
                 }.onFailure { error ->
-                    _errorMessage.value = "Ошибка входа: ${error.message}"
+                    // Просто сохраняем исходную ошибку, перевод делаем в UI
+                    _errorMessage.value = error.message
                 }
             } catch (e: Exception) {
-                _errorMessage.value = "Ошибка входа: ${e.message}"
+                _errorMessage.value = e.message
                 Log.e("AuthViewModel", "Error during login", e)
             } finally {
                 _isLoading.value = false
             }
         }
     }
+
 
     fun logout() {
         firebaseRepository.logoutUser()
