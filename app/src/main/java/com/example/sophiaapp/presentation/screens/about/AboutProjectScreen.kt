@@ -52,6 +52,13 @@ import com.example.sophiaapp.R
 import android.content.Intent
 import android.net.Uri
 import com.example.sophiaapp.presentation.common.components.BackButton
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+import androidx.compose.runtime.remember
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -121,6 +128,9 @@ fun AboutProjectScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
+                SectionTitle(title = AppStrings.Project.SOURCES)
+                SourcesCard()
+
                 SectionTitle(title = AppStrings.Project.CONTACTS)
                 InfoCard {
                     ProjectInfoRow(
@@ -129,7 +139,10 @@ fun AboutProjectScreen(
                     )
 
                 }
+
+
                 Spacer(modifier = Modifier.height(24.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
@@ -349,4 +362,79 @@ private fun ClickableInfoCard(
         }
     }
 
+}
+@Composable
+private fun SourcesCard() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 48.dp)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.card_background),
+            contentDescription = null,
+            modifier = Modifier.matchParentSize(),
+            contentScale = ContentScale.FillBounds
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            LinkifiedText(
+                text = AppStrings.Project.SOURCES_CONTENT,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}
+
+@Composable
+private fun LinkifiedText(
+    text: String,
+    style: androidx.compose.ui.text.TextStyle,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val uriHandler = remember { android.net.Uri.parse("") }
+    val linkColor = MaterialTheme.colorScheme.primary
+
+    val annotatedText = buildAnnotatedString {
+        val urlRegex = "(https?://[^\\s]+)".toRegex()
+        val matches = urlRegex.findAll(text)
+
+        var lastIndex = 0
+        for (match in matches) {
+            // Добавляем обычный текст до ссылки
+            append(text.substring(lastIndex, match.range.first))
+
+            // Добавляем ссылку с аннотацией
+            val url = match.value
+            pushStringAnnotation(tag = "URL", annotation = url)
+            withStyle(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline)) {
+                append(url)
+            }
+            pop()
+
+            lastIndex = match.range.last + 1
+        }
+
+        // Добавляем оставшийся текст
+        if (lastIndex < text.length) {
+            append(text.substring(lastIndex))
+        }
+    }
+
+    ClickableText(
+        text = annotatedText,
+        style = style,
+        onClick = { offset ->
+            annotatedText.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                .firstOrNull()?.let { annotation ->
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
+                    context.startActivity(intent)
+                }
+        },
+        modifier = modifier
+    )
 }

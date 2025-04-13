@@ -191,6 +191,14 @@ object AppStrings{
         const val REPPROJECT="Репозиторий проекта"
         const val ULSTUSOPHIA="https://ulstu.ru/teachers/tashlinskaya-elena-shamilevna/"
         const val ULSTUTEACHER="Преподаватель"
+        const val SOURCES = "Источники"
+        const val SOURCES_CONTENT = "В работе были использованы материалы из открытых источников:\n\n" +
+                "1. Сайт: Диалектика - философское учение о развитии\n" +
+                "https://studizba.com/lectures/filosofija/dialektika/27011-dialektika-filosofskoe-uchenie-o-razvitii.html\n\n" +
+                "2. Статья: Диалектика как учение о всеобщей связи и развитии\n" +
+                "http://lector.svvpsu.ru/files/filosifiya/lekcii/lekciya%2014.pdf\n\n" +
+                "3. Научная публикация УлГТУ: Методические материалы по философии\n" +
+                "https://lib.laop.ulstu.ru/venec/disk/2017/193.pdf"
     }
     object Legal {
         const val PRIVACY_POLICY_TEXT = """
