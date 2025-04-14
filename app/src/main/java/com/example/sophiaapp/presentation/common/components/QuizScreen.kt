@@ -106,21 +106,23 @@ fun QuizScreen(
                 // Определяем фон и цвет кнопки в зависимости от того, все ли вопросы отвечены
                 val backgroundRes = if (allQuestionsAnswered) R.drawable.card_background else R.drawable.card_background
                 val textColor = if (allQuestionsAnswered) Color.Black else Color.Gray
-                
+
                 CustomButton(
-                    text="Завершить тест",
-                    onClick={
+                    text = "Завершить тест",
+                    onClick = {
                         if (allQuestionsAnswered) {
-                            quizCompleted=true
-                            score=selectedAnswers.filterIndexed{index,answer ->
-                                answer==quiz.questions[index].correctAnswerIndex
+                            quizCompleted = true
+                            score = selectedAnswers.filterIndexed { index, answer ->
+                                answer == quiz.questions[index].correctAnswerIndex
                             }.size
-                            onQuizComplete(score,quiz.questions.size)
+
+                            // Сохраняем результаты ответов через колбэк
+                            onQuizComplete(score, quiz.questions.size)
                         }
                     },
                     backgroundRes = backgroundRes,
                     textColor = textColor,
-                    modifier=Modifier.weight(1f).padding(start=8.dp)
+                    modifier = Modifier.weight(1f).padding(start = 8.dp)
                 )
             }
         }

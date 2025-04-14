@@ -6,23 +6,35 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.sophiaapp.data.local.preferences.ProfileDao
 import com.example.sophiaapp.data.local.preferences.ProfileEntity
+import com.example.sophiaapp.data.local.preferences.UserProgressDao
+import com.example.sophiaapp.data.local.preferences.UserProgressEntity
 
-@Database(entities=[ProfileEntity::class],version=1)
-abstract class AppDatabase: RoomDatabase(){
+@Database(
+    entities = [
+        ProfileEntity::class,
+        UserProgressEntity::class
+    ],
+    version = 3,
+    exportSchema = false
+)
+abstract class AppDatabase : RoomDatabase() {
     abstract fun profileDao(): ProfileDao
+    abstract fun userProgressDao(): UserProgressDao
 
     companion object {
         @Volatile
-        private var INSTANCE: AppDatabase?=null
+        private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(context:Context):AppDatabase{
-            return INSTANCE?:synchronized(this){
-                val instance=Room.databaseBuilder(
+        fun getInstance(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     "sophia_database"
-                ).build()
-                INSTANCE=instance
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
+                INSTANCE = instance
                 instance
             }
         }

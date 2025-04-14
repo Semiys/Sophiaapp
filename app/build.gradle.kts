@@ -75,6 +75,8 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(libs.firebase.analytics)
 
+    implementation(libs.gson)
+
 }
 
 

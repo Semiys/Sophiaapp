@@ -88,8 +88,8 @@ class MatchingGameViewModel(
         _isGameCompleted.value = checkAllQuestionsConnected()
     }
 
-    fun checkAnswers() {
-        val game = _game.value ?: return
+    fun checkAnswers(): Int {
+        val game = _game.value ?: return 0
         val correctCount = _userPairs.value.count { pair ->
             game.correctPairs.any {
                 it.questionId == pair.questionId && it.answerId == pair.answerId
@@ -98,6 +98,8 @@ class MatchingGameViewModel(
 
         _score.value = correctCount
         _showResults.value = true
+
+        return correctCount // Добавляем возврат значения
     }
 
     private fun checkGameCompletion() {

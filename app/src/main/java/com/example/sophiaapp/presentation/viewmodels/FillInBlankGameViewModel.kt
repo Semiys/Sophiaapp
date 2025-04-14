@@ -62,8 +62,8 @@ class FillInBlankGameViewModel(
     }
 
     // Проверка ответов
-    fun checkAnswers() {
-        val game = _game.value ?: return
+    fun checkAnswers(): Int {
+        val game = _game.value ?: return 0
         val results = mutableMapOf<String, Boolean>()
         var correctCount = 0
 
@@ -77,6 +77,8 @@ class FillInBlankGameViewModel(
         _answerResults.value = results
         _score.value = correctCount
         _answersChecked.value = true
+
+        return correctCount // Добавляем возврат значения
     }
 
     // Сброс игры

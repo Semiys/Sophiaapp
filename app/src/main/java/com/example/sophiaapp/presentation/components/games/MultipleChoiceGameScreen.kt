@@ -28,6 +28,12 @@ import com.example.sophiaapp.navigation.Screen
 import com.example.sophiaapp.presentation.common.components.CustomButton
 import com.example.sophiaapp.presentation.viewmodels.MultipleChoiceGameViewModel
 import com.example.sophiaapp.utils.localization.AppStrings
+import androidx.compose.ui.platform.LocalContext
+import com.example.sophiaapp.data.local.database.AppDatabase
+import com.example.sophiaapp.data.repository.FirebaseAuthRepository
+import com.example.sophiaapp.data.repository.UserProgressRepository
+import com.example.sophiaapp.domain.models.LocationType
+import com.example.sophiaapp.presentation.viewmodels.UserProgressViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,7 +42,17 @@ fun MultipleChoiceGameScreen(
     navController: NavHostController,
     courseId: String,
     onGameCompleted: (Int, Int) -> Unit,
-    viewModel: MultipleChoiceGameViewModel = viewModel(factory = MultipleChoiceGameViewModel.Factory(gameId))
+    viewModel: MultipleChoiceGameViewModel = viewModel(factory = MultipleChoiceGameViewModel.Factory(gameId)),
+    // Добавляем progressViewModel
+    progressViewModel: UserProgressViewModel = viewModel(
+        factory = UserProgressViewModel.Factory(
+            progressRepository = UserProgressRepository(
+                userProgressDao = AppDatabase.getInstance(LocalContext.current).userProgressDao(),
+                firebaseRepository = FirebaseAuthRepository()
+            ),
+            firebaseRepository = FirebaseAuthRepository()
+        )
+    )
 ) {
     val game by viewModel.game.collectAsState()
     val userAnswers by viewModel.userAnswers.collectAsState()
@@ -45,7 +61,7 @@ fun MultipleChoiceGameScreen(
     val score by viewModel.score.collectAsState()
     val selectedOptions by viewModel.selectedOptions.collectAsState()
     val allAnswersSelected by viewModel.allAnswersSelected.collectAsState()
-    
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -99,15 +115,20 @@ fun MultipleChoiceGameScreen(
                 
                 // Кнопка "Проверить" активна только если выбраны все ответы и еще не проверены
                 val checkButtonEnabled = allAnswersSelected && !answersChecked
-                
+
                 CustomButton(
-                    onClick = { if (checkButtonEnabled) viewModel.checkAnswers() },
+                    onClick = {
+                        if (checkButtonEnabled) {
+                            val correctCount = viewModel.checkAnswers() // Получаем непосредственный результат
+                            onGameCompleted(correctCount, currentGame.questions.size)
+                        }
+                    },
                     text = "Проверить",
                     modifier = Modifier.weight(1f).padding(start = 8.dp),
-                    backgroundRes = if (checkButtonEnabled) 
-                                R.drawable.card_background
-                            else 
-                                R.drawable.continue_button,
+                    backgroundRes = if (checkButtonEnabled)
+                        R.drawable.card_background
+                    else
+                        R.drawable.continue_button,
                     textColor = if (checkButtonEnabled) Color.Black else Color.Gray
                 )
             }
@@ -158,10 +179,19 @@ fun MultipleChoiceGameScreen(
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(vertical = 8.dp)
                         )
-                        
+
                         CustomButton(
                             onClick = {
-                                onGameCompleted(score, currentGame.questions.size)
+                                // Добавляем обновление местоположения перед навигацией
+                                progressViewModel.updateLastLocation(
+                                    locationType = LocationType.PRACTICE,
+                                    courseId = courseId,
+                                    sectionId = ""
+                                )
+
+                                // onGameCompleted уже вызвана при проверке, не нужно вызывать повторно
+                                // onGameCompleted(score, currentGame.questions.size) - удалите эту строку
+
                                 navController.navigate(Screen.Library.route) {
                                     popUpTo(Screen.Library.route) {
                                         inclusive = false

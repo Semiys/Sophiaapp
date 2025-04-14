@@ -49,7 +49,10 @@ fun CourseDetailScreen(
                 .fillMaxWidth()
                 .padding(bottom=24.dp)
         ){
-            BackButton(onClick={navController.popBackStack()})
+            BackButton(onClick = {
+                // Заменяем popBackStack на явную навигацию
+                navController.navigate(Screen.Library.route)
+            })
             Spacer(modifier=Modifier.width(16.dp))
             Text(
                 text=courseTitle,

@@ -196,7 +196,8 @@ fun FillInBlankQuestionItem(
                     .padding(vertical = 8.dp),
                 enabled = !isAnswerChecked,
                 isError = isAnswerChecked && !isCorrect,
-                colors = TextFieldDefaults.outlinedTextFieldColors(
+                // ЗАМЕНИТЬ ЭТОТ БЛОК
+                colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = when {
                         !isAnswerChecked -> MaterialTheme.colorScheme.primary
                         isCorrect -> Color(0xFF4CAF50)
@@ -206,7 +207,11 @@ fun FillInBlankQuestionItem(
                         !isAnswerChecked -> Color.Gray
                         isCorrect -> Color(0xFF4CAF50)
                         else -> Color(0xFFE57373)
-                    }
+                    },
+                    // Добавляем параметры для цвета контейнера
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    disabledContainerColor = MaterialTheme.colorScheme.surface
                 )
             )
             

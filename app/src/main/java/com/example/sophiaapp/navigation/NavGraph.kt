@@ -74,7 +74,10 @@ fun SetupNavGraph(
 
 
         composable(route = Screen.Home.route) {
-            HomeScreen(paddingValues=paddingValues)
+            HomeScreen(
+                paddingValues=paddingValues,
+                navController = navController
+            )
         }
         composable(route = Screen.Library.route) {
             LibraryScreen(

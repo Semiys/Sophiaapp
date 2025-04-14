@@ -27,6 +27,12 @@ import com.example.sophiaapp.navigation.Screen
 import com.example.sophiaapp.presentation.common.components.CustomButton
 import com.example.sophiaapp.presentation.viewmodels.MatchingGameViewModel
 import com.example.sophiaapp.utils.localization.AppStrings
+import androidx.compose.ui.platform.LocalContext
+import com.example.sophiaapp.data.local.database.AppDatabase
+import com.example.sophiaapp.data.repository.FirebaseAuthRepository
+import com.example.sophiaapp.data.repository.UserProgressRepository
+import com.example.sophiaapp.domain.models.LocationType
+import com.example.sophiaapp.presentation.viewmodels.UserProgressViewModel
 
 @Composable
 fun MatchingGameScreen(
@@ -34,7 +40,17 @@ fun MatchingGameScreen(
     onGameCompleted: (Int, Int) -> Unit,
     navController: NavHostController? = null,
     courseId: String? = null,
-    viewModel: MatchingGameViewModel = viewModel(factory = MatchingGameViewModel.Factory(gameId))
+    viewModel: MatchingGameViewModel = viewModel(factory = MatchingGameViewModel.Factory(gameId)),
+    // Добавляем progressViewModel
+    progressViewModel: UserProgressViewModel = viewModel(
+        factory = UserProgressViewModel.Factory(
+            progressRepository = UserProgressRepository(
+                userProgressDao = AppDatabase.getInstance(LocalContext.current).userProgressDao(),
+                firebaseRepository = FirebaseAuthRepository()
+            ),
+            firebaseRepository = FirebaseAuthRepository()
+        )
+    )
 ) {
     val game by viewModel.game.collectAsState()
     val userPairs by viewModel.userPairs.collectAsState()
@@ -249,10 +265,10 @@ fun MatchingGameScreen(
 
                 Button(
                     onClick = {
-                        viewModel.checkAnswers()
-                        onGameCompleted(score, currentGame.questions.size)
+                        val correctCount = viewModel.checkAnswers() // Получаем актуальное значение
+                        onGameCompleted(correctCount, currentGame.questions.size)
                     },
-                    enabled = isGameCompleted && !showResults // Активна, только если все соединения созданы и результаты еще не показаны
+                    enabled = isGameCompleted && !showResults
                 ) {
                     Text("Проверить")
                 }
@@ -308,6 +324,13 @@ fun MatchingGameScreen(
                     CustomButton(
                         text = AppStrings.Quiz.RETURN_TO_COURSE,
                         onClick = {
+                            // Обновляем последнее местоположение перед навигацией
+                            progressViewModel.updateLastLocation(
+                                locationType = LocationType.PRACTICE,
+                                courseId = courseId,
+                                sectionId = ""
+                            )
+
                             navController.navigate(Screen.Library.route) {
                                 popUpTo(Screen.Library.route) {
                                     inclusive = false

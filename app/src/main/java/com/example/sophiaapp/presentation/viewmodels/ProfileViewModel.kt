@@ -229,7 +229,7 @@ class ProfileViewModel(
     class Factory(private val context: Context) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-                val database = AppDatabase.getDatabase(context)
+                val database = AppDatabase.getInstance(context)
                 val localRepository = ProfileRepository(context, database.profileDao())
                 val firebaseRepository = FirebaseAuthRepository()
                 @Suppress("UNCHECKED_CAST")

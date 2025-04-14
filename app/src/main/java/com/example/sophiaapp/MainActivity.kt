@@ -22,10 +22,20 @@ import com.example.sophiaapp.navigation.SetupNavGraph
 import com.example.sophiaapp.presentation.components.BottomBar
 import com.example.sophiaapp.presentation.viewmodels.AuthViewModel
 import com.example.sophiaapp.ui.theme.SophiaappTheme
+import androidx.room.Room
+import com.example.sophiaapp.data.local.database.AppDatabase
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Инициализация базы данных с поддержкой миграции
+        Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "sophia_database"
+        ).fallbackToDestructiveMigration() // Это позволит пересоздать базу при изменении схемы
+            .build()
 
         setContent {
             SophiaappTheme {

@@ -9,23 +9,42 @@ import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.sophiaapp.R
+import com.example.sophiaapp.data.local.database.AppDatabase
+import com.example.sophiaapp.data.local.preferences.UserProgressDao
+import com.example.sophiaapp.data.repository.FirebaseAuthRepository
+import com.example.sophiaapp.data.repository.UserProgressRepository
+import com.example.sophiaapp.domain.models.LocationType
 import com.example.sophiaapp.navigation.Screen
 import com.example.sophiaapp.presentation.common.components.BackButton
 import com.example.sophiaapp.presentation.common.components.CustomButton
+import com.example.sophiaapp.presentation.viewmodels.UserProgressViewModel
 import com.example.sophiaapp.utils.localization.AppStrings
 
 @Composable
 fun CourseTheoryScreen(
     courseId: String,
-    navController: NavHostController
+    navController: NavHostController,
+    // Добавляем viewModel для прогресса
+    progressViewModel: UserProgressViewModel = viewModel(
+        factory = UserProgressViewModel.Factory(
+            progressRepository = UserProgressRepository(
+                userProgressDao = AppDatabase.getInstance(LocalContext.current).userProgressDao(),
+                firebaseRepository = FirebaseAuthRepository()
+            ),
+            firebaseRepository = FirebaseAuthRepository()
+        )
+    )
 ) {
     val courseTitle = when (courseId) {
         "1" -> AppStrings.Course.COURSE_1_TITLE
@@ -47,9 +66,19 @@ fun CourseTheoryScreen(
         "6" -> AppStrings.Course.COURSE_6_DESCRIPTION
         "7" -> AppStrings.Course.COURSE_7_DESCRIPTION
         "8" -> AppStrings.Course.COURSE_8_DESCRIPTION
-
         else -> AppStrings.Course.DEFAULT_COURSE_DESCRIPTION
     }
+
+    // Отслеживаем, что пользователь посетил теорию
+    LaunchedEffect(courseId) {
+        // Обновляем последнее местоположение пользователя
+        progressViewModel.updateLastLocation(
+            locationType = LocationType.THEORY,
+            courseId = courseId,
+            sectionId = ""
+        )
+    }
+
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -62,7 +91,10 @@ fun CourseTheoryScreen(
                 .fillMaxWidth()
                 .padding(bottom = 24.dp)
         ) {
-            BackButton(onClick = { navController.popBackStack() })
+            BackButton(onClick = {
+                // Заменяем popBackStack на явную навигацию
+                navController.navigate(Screen.CourseDetail.createRoute(courseId))
+            })
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = courseTitle + AppStrings.Course.THEORY_SUFFIX,
@@ -82,6 +114,12 @@ fun CourseTheoryScreen(
             CustomButton(
                 text = AppStrings.Course.CONTINUE_TO_PRACTICE,
                 onClick = {
+                    // Обновляем прогресс теории при переходе к практике
+                    progressViewModel.updateCourseProgress(
+                        courseId = courseId,
+                        theoryCompleted = true
+                    )
+
                     navController.navigate(Screen.CoursePractice.createRoute(courseId)) {
                         popUpTo(Screen.CourseDetail.createRoute(courseId))
                     }
@@ -91,12 +129,8 @@ fun CourseTheoryScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
-
             )
         }
-
-
-
     }
 }
 
@@ -107,7 +141,6 @@ fun TheoryCard(
 ) {
     Box(
         modifier = modifier
-
     ) {
         Image(
             painter = painterResource(id = R.drawable.text_theory),

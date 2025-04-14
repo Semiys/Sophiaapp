@@ -29,14 +29,30 @@ import com.example.sophiaapp.navigation.Screen
 import com.example.sophiaapp.presentation.common.components.CustomButton
 import com.example.sophiaapp.presentation.viewmodels.FillInBlankGameViewModel
 import com.example.sophiaapp.utils.localization.AppStrings
+import androidx.compose.ui.platform.LocalContext
+import com.example.sophiaapp.data.local.database.AppDatabase
+import com.example.sophiaapp.data.repository.FirebaseAuthRepository
+import com.example.sophiaapp.data.repository.UserProgressRepository
+import com.example.sophiaapp.domain.models.LocationType
+import com.example.sophiaapp.presentation.viewmodels.UserProgressViewModel
 
 @Composable
-fun FillInBlankGameScreen(
+fun FillInBlankGameComponentScreen(
     gameId: String,
     onGameCompleted: (Int, Int) -> Unit,
     navController: NavHostController? = null,
     courseId: String? = null,
-    viewModel: FillInBlankGameViewModel = viewModel(factory = FillInBlankGameViewModel.Factory(gameId))
+    viewModel: FillInBlankGameViewModel = viewModel(factory = FillInBlankGameViewModel.Factory(gameId)),
+    // Добавляем progressViewModel
+    progressViewModel: UserProgressViewModel = viewModel(
+        factory = UserProgressViewModel.Factory(
+            progressRepository = UserProgressRepository(
+                userProgressDao = AppDatabase.getInstance(LocalContext.current).userProgressDao(),
+                firebaseRepository = FirebaseAuthRepository()
+            ),
+            firebaseRepository = FirebaseAuthRepository()
+        )
+    )
 ) {
     val game by viewModel.game.collectAsState()
     val userAnswers by viewModel.userAnswers.collectAsState()
@@ -48,6 +64,8 @@ fun FillInBlankGameScreen(
 
     // Текущие значения в текстовых полях
     val textFieldValues = remember { mutableStateMapOf<String, TextFieldValue>() }
+    val isGameCompleted = userAnswers.size == game?.questions?.size ?: 0 && userAnswers.values.none { it.isBlank() }
+    val showResults = answersChecked
     
     // Инициализация текстовых полей
     LaunchedEffect(userAnswers) {
@@ -104,7 +122,7 @@ fun FillInBlankGameScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(
-                    onClick = { 
+                    onClick = {
                         viewModel.resetGame()
                         focusManager.clearFocus()
                     },
@@ -117,11 +135,10 @@ fun FillInBlankGameScreen(
 
                 Button(
                     onClick = {
-                        viewModel.checkAnswers()
-                        onGameCompleted(score, currentGame.questions.size)
-                        focusManager.clearFocus()
+                        val correctCount = viewModel.checkAnswers() // Получаем непосредственный результат
+                        onGameCompleted(correctCount, currentGame.questions.size)
                     },
-                    enabled = !answersChecked // Активна, только если ответы еще не проверены
+                    enabled = isGameCompleted && !showResults
                 ) {
                     Text("Проверить")
                 }
@@ -177,6 +194,13 @@ fun FillInBlankGameScreen(
                     CustomButton(
                         text = AppStrings.Quiz.RETURN_TO_COURSE,
                         onClick = {
+                            // Добавляем обновление местоположения перед навигацией
+                            progressViewModel.updateLastLocation(
+                                locationType = LocationType.PRACTICE,
+                                courseId = courseId,
+                                sectionId = ""
+                            )
+
                             navController.navigate(Screen.Library.route) {
                                 popUpTo(Screen.Library.route) {
                                     inclusive = false
