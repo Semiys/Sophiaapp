@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.background
@@ -19,17 +22,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 
-
-
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.platform.LocalFocusManager
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.example.sophiaapp.utils.localization.AppStrings
@@ -38,22 +43,26 @@ import com.example.sophiaapp.R
 
 @Composable
 fun SearchBar(
-    modifier:Modifier=Modifier,
-    onFilterClick:()->Unit
-){
+    modifier: Modifier = Modifier,
+    query: String = "",
+    onQueryChange: (String) -> Unit = {},
+    onSearch: (String) -> Unit = {},
+    onFilterClick: () -> Unit
+) {
+    val focusManager = LocalFocusManager.current
+
     Box(
-        modifier=Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
         contentAlignment = Alignment.Center
 
     ) {
         Image(
-            painter= painterResource(id=R.drawable.continue_button),
+            painter = painterResource(id = R.drawable.continue_button),
             contentDescription = null,
-            modifier=Modifier.matchParentSize(),
-            contentScale= ContentScale.FillBounds
-
+            modifier = Modifier.matchParentSize(),
+            contentScale = ContentScale.FillBounds
         )
         Row(
             modifier = Modifier
@@ -64,7 +73,9 @@ fun SearchBar(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
-                modifier=Modifier.fillMaxHeight(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -74,16 +85,58 @@ fun SearchBar(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Text(
-                    text = AppStrings.SearchBar.SEARCH_PHILOSOPHY_TOPICS,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                // Заменяем статический текст на текстовое поле
+                Box(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    BasicTextField(
+                        value = query,
+                        onValueChange = onQueryChange,
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(
+                            color = MaterialTheme.colorScheme.onSurface
+                        ),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Search
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onSearch = {
+                                onSearch(query)
+                                focusManager.clearFocus()
+                            }
+                        ),
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
-                )
+                    // Показываем подсказку, если поле поиска пустое
+                    if (query.isEmpty()) {
+                        Text(
+                            text = AppStrings.SearchBar.SEARCH_PHILOSOPHY_TOPICS,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                // Кнопка очистки поиска, если есть текст
+                if (query.isNotEmpty()) {
+                    IconButton(
+                        onClick = { onQueryChange("") }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Clear search",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
+
+            // Кнопка фильтра
             IconButton(
                 onClick = onFilterClick,
-                modifier=Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowUp,
@@ -91,7 +144,6 @@ fun SearchBar(
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
         }
     }
 }
